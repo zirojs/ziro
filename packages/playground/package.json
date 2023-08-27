@@ -4,13 +4,16 @@
   "description": "hyper playground",
   "license": "MIT",
   "scripts": {
-    "dev": "hyper dev"
+    "dev": "nodemon -w ../hyper/dist --exec 'yarn hyper:dev'",
+    "hyper:dev": "hyper dev"
   },
   "devDependencies": {
-    "hyper": "0.0.1"
+    "hyper": "0.0.1",
+    "nodemon": "^3.0.1"
   },
   "dependencies": {
     "react": "^18.2.0",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0"
   }
 }

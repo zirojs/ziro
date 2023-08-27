@@ -17,6 +17,7 @@ const bootstrap = async () => {
       server: { middlewareMode: true },
       appType: 'custom',
       root: process.cwd(),
+      configFile: false,
       clearScreen: false,
       build: {
         rollupOptions: {

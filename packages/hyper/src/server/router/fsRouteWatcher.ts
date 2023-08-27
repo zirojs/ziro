@@ -1,4 +1,4 @@
-import { eventHandler } from 'h3'
+import { eventHandler, getRequestURL } from 'h3'
 import path from 'path'
 import { createRouter } from 'radix3'
 import { ViteDevServer } from 'vite'
@@ -9,7 +9,7 @@ import { pageRenderer } from './pagerenderer.ts'
 const namedRouteRegex = /\[(?!\.\.\.)(.*)\]/s
 const namedWildcardRouteRegex = /\[(\.\.\.)(.*)\]/s
 const rootRegex = /index\.([a-zA-Z0-9]+$)/s
-
+// hi
 const pathGenerator = (directories: Record<string, string[]>) => {
   const paths: Record<string, string> = {}
   Object.keys(directories).forEach((dirPath) => {
@@ -48,7 +48,7 @@ export const fsRouteGenerator = (vite: ViteDevServer) => {
   vite.watcher.on('all', routerConfigure)
 
   return eventHandler(async (event) => {
-    const routeData = router.lookup(event.path)
+    const routeData = router.lookup(getRequestURL(event).pathname)
     if (routeData) {
       let render, htmlContent
 
@@ -61,7 +61,26 @@ export const fsRouteGenerator = (vite: ViteDevServer) => {
       }
 
       const appHtml = await render()
-      const html = htmlContent.replace(`<!--ssr-outlet-->`, appHtml).replace(`<!--hyper-data-->`, `<script>window._pagePath = '${path.resolve(routeData.filePath)}'</script>`)
+      console.log(
+        `
+			imp {page} from '${routeData.filePath}';
+			imp ReactDOM from 'react-dom/client';
+
+			ReactDOMServer.renderToString(page());
+						`.replaceAll('imp', 'import')
+      )
+      const code = (
+        await vite.pluginContainer.transform(
+          `
+imp {page} from '${routeData.filePath}';
+imp ReactDOM from 'react-dom/client';
+
+ReactDOM.hydrateRoot(document.getElementById('hyper-app'), page())
+			`.replaceAll('imp', 'import'),
+          routeData.filePath
+        )
+      ).code
+      const html = htmlContent.replace(`<!--ssr-outlet-->`, appHtml).replace(`<!--hyper-data-->`, `<script type="module">${code}</script>`)
       return html
     }
   })

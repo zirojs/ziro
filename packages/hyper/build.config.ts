@@ -3,6 +3,7 @@ export default defineBuildConfig({
   entries: [
     'src/hyper.ts',
     'bin/hyper-cli.ts',
+    'src/entries/hyper.tsx',
     {
       builder: 'mkdist',
       input: 'src/assets',
@@ -13,5 +14,4 @@ export default defineBuildConfig({
   rollup: {
     cjsBridge: true,
   },
-  failOnWarn: false,
 })

@@ -1,3 +1,5 @@
+import Confetti from 'react-confetti'
+
 export const page = () => {
-  return 'product index'
+  return <Confetti width={200} height={100} />
 }

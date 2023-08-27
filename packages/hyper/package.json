@@ -7,7 +7,7 @@
   ],
   "type": "module",
   "scripts": {
-    "dev": "unbuild --stub",
+    "dev": "watch 'yarn build' ./src ./bin",
     "build": "unbuild"
   },
   "author": "Nairman Movaffaghi",
@@ -30,7 +30,8 @@
     "rollup-plugin-dts": "^6.0.0",
     "sirv": "^2.0.3",
     "url": "^0.11.1",
-    "vite": "^4.4.6"
+    "vite": "^4.4.6",
+    "watch": "^1.0.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
@@ -38,7 +39,6 @@
     "@types/react": "^18.2.17",
     "@types/react-dom": "^18.2.7",
     "copyfiles": "^2.4.1",
-    "nodemon": "^3.0.1",
     "typescript": "^5.1.6",
     "unbuild": "^2.0.0"
   }
