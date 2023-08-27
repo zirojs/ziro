@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "ESNext",
+		"strict": true,
+		"moduleResolution": "Node",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"outDir": "dist",
+		"resolveJsonModule": true,
+		"rootDir": ".",
+		"jsx": "react-jsx",
+		"declaration": true,
+		"baseUrl": "./src",
+		"allowImportingTsExtensions": true
+	},
+	"include": [
+		"bin/**/*",
+		"./src/**/*",
+		"./types.d.ts"
+	],
+	"hooks": [
+		"copy-files"
+	],
+	"ts-node": {
+		"esm": true
+	}
+}

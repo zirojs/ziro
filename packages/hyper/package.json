@@ -1,0 +1,45 @@
+{
+  "name": "hyper",
+  "version": "0.0.1",
+  "description": "a ssr framework for react",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild"
+  },
+  "author": "Nairman Movaffaghi",
+  "license": "MIT",
+  "bin": {
+    "hyper": "dist/bin/hyper-cli.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
+    "chalk": "^5.3.0",
+    "chokidar": "^3.5.3",
+    "commander": "^11.0.0",
+    "express": "^4.18.2",
+    "h3": "^1.7.1",
+    "listhen": "^1.1.2",
+    "lodash-es": "^4.17.21",
+    "radix3": "^1.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rollup-plugin-dts": "^6.0.0",
+    "sirv": "^2.0.3",
+    "url": "^0.11.1",
+    "vite": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/lodash-es": "^4.17.8",
+    "@types/react": "^18.2.17",
+    "@types/react-dom": "^18.2.7",
+    "copyfiles": "^2.4.1",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.1.6",
+    "unbuild": "^2.0.0"
+  }
+}
