@@ -61,14 +61,7 @@ export const fsRouteGenerator = (vite: ViteDevServer) => {
       }
 
       const appHtml = await render()
-      console.log(
-        `
-			imp {page} from '${routeData.filePath}';
-			imp ReactDOM from 'react-dom/client';
 
-			ReactDOMServer.renderToString(page());
-						`.replaceAll('imp', 'import')
-      )
       const code = (
         await vite.pluginContainer.transform(
           `
