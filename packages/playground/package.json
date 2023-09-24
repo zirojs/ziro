@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon -w ../hyper/dist --exec 'yarn hyper:dev'",
     "hyper:dev": "hyper dev",
-    "build": "hyper build"
+    "build": "nodemon -w ../hyper/dist --exec 'yarn hyper:build'",
+    "hyper:build": "hyper build"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.15",
@@ -16,6 +17,7 @@
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0"

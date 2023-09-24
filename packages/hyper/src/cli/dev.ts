@@ -29,18 +29,18 @@ const bootstrap = async () => {
         },
       },
     })
-
     app.use(fromNodeMiddleware(vite.middlewares))
-    setupFsRoutes(vite, app)
-  } else {
+  }
+  setupFsRoutes(vite, app)
+
+  if (process.env.NODE_ENV !== DEV_ENV)
     app.use(
       fromNodeMiddleware(
-        sirv(path.resolve(__dirname), {
+        sirv(path.resolve(process.cwd(), '.hyper', 'client-bundles'), {
           gzip: true,
         })
       )
     )
-  }
 
   return { app, vite }
 }
@@ -48,7 +48,7 @@ const bootstrap = async () => {
 export const runServer = async () => {
   return bootstrap().then(async ({ app, vite }) => {
     const listener = await listen(toNodeListener(app), { port: 3000, showURL: false, hostname: '0.0.0.0' })
-    console.clear()
+    // console.clear()
     console.log(`${chalk.yellowBright.bold('⚡️ Hyper ')} ${chalk.green('[Development]')}`)
     console.log()
     console.log(`Running on: ${chalk.green(listener.url)}`)

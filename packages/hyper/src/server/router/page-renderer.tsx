@@ -1,10 +1,12 @@
 import fs from 'fs'
 import { defaultContentType, eventHandler, getValidatedQuery } from 'h3'
+import path from 'node:path'
 import { join } from 'path'
 import { RadixRouter } from 'radix3'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { ViteDevServer } from 'vite'
+import { DEV_ENV } from '../../cli/dev'
 import { RouteData } from './fsRouteWatcher'
 
 export const transformPageContent = async (vite: ViteDevServer, routeData: RouteData & { pageOnly: boolean }) => {
@@ -70,12 +72,17 @@ export const pageJsBundleHandler = (vite: ViteDevServer, router: RadixRouter<Rou
   })
 }
 
-export const pageSSRRenderer = async (vite: ViteDevServer, filePath: string) => {
-  const pageModule = await vite.ssrLoadModule(filePath)
+export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: string) => {
+  let pageModule: any = null
+  if (process.env.NODE_ENV === DEV_ENV && vite !== null) {
+    pageModule = await vite.ssrLoadModule(filePath)
+  } else {
+    pageModule = await import(path.join(process.cwd(), '.hyper', 'server-bundles', filePath))
+  }
   const hasLayout = fs.existsSync(join(process.cwd(), 'index.tsx'))
   let Layout = React.Fragment
 
-  if (hasLayout) {
+  if (hasLayout && vite) {
     const content = (await vite.ssrLoadModule(join(process.cwd(), 'index.tsx'))).layout
     Layout = content.layout || React.Fragment
   }
