@@ -3,5 +3,5 @@ export const generatePaths = async () => {
 }
 
 export const page = () => {
-  return 'product'
+  return <span>hi here</span>
 }

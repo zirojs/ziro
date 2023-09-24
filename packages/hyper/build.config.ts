@@ -1,9 +1,11 @@
 import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   entries: [
-    'src/hyper.ts',
+    'src/cli/dev.ts',
+    'src/cli/build.ts',
     'bin/hyper-cli.ts',
-    'src/entries/hyper.tsx',
+    'src/client/Link/index.tsx',
+    'src/client/RouterContext/index.tsx',
     {
       builder: 'mkdist',
       input: 'src/assets',
@@ -13,5 +15,9 @@ export default defineBuildConfig({
   declaration: true,
   rollup: {
     cjsBridge: true,
+    inlineDependencies: true,
+    esbuild: {
+      jsx: 'automatic',
+    },
   },
 })

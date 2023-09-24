@@ -1,5 +1,12 @@
-import Confetti from 'react-confetti'
+import Link from 'hyper/link'
 
 export const page = () => {
-  return <Confetti width={200} height={100} />
+  return (
+    <>
+      <div className="block">products page here</div>
+      <Link className="bg-red-500" href="/">
+        Back to homepage
+      </Link>
+    </>
+  )
 }

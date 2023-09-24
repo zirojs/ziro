@@ -4,7 +4,7 @@ import { listen } from 'listhen'
 import path from 'path'
 import sirv from 'sirv'
 import { ViteDevServer, createServer as createViteServer } from 'vite'
-import { fsRouteGenerator } from './server/router/fsRouteWatcher'
+import { setupFsRoutes } from '../server/router/fsRouteWatcher'
 
 export const DEV_ENV = 'development'
 
@@ -20,6 +20,8 @@ const bootstrap = async () => {
       configFile: false,
       clearScreen: false,
       build: {
+        ssrEmitAssets: true,
+        ssr: true,
         rollupOptions: {
           input: {
             main: path.resolve(__dirname, 'assets/index.html'),
@@ -27,8 +29,9 @@ const bootstrap = async () => {
         },
       },
     })
+
     app.use(fromNodeMiddleware(vite.middlewares))
-    app.use(fsRouteGenerator(vite))
+    setupFsRoutes(vite, app)
   } else {
     app.use(
       fromNodeMiddleware(
@@ -44,8 +47,8 @@ const bootstrap = async () => {
 
 export const runServer = async () => {
   return bootstrap().then(async ({ app, vite }) => {
-    const listener = await listen(toNodeListener(app), { port: 3000, showURL: false })
-    // console.clear()
+    const listener = await listen(toNodeListener(app), { port: 3000, showURL: false, hostname: '0.0.0.0' })
+    console.clear()
     console.log(`${chalk.yellowBright.bold('⚡️ Hyper ')} ${chalk.green('[Development]')}`)
     console.log()
     console.log(`Running on: ${chalk.green(listener.url)}`)

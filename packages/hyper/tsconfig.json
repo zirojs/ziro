@@ -11,9 +11,7 @@
 		"resolveJsonModule": true,
 		"rootDir": ".",
 		"jsx": "react-jsx",
-		"declaration": true,
-		"baseUrl": "./src",
-		"allowImportingTsExtensions": true
+		"declaration": true
 	},
 	"include": [
 		"bin/**/*",
