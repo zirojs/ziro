@@ -6,6 +6,7 @@ export default defineBuildConfig({
     'bin/hyper-cli.ts',
     'src/client/Link/index.tsx',
     'src/client/RouterContext/index.tsx',
+    'src/client/PageContext/index.tsx',
     {
       builder: 'mkdist',
       input: 'src/assets',

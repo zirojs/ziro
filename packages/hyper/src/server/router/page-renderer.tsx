@@ -1,18 +1,16 @@
-import fs from 'fs'
 import { defaultContentType, eventHandler, getValidatedQuery } from 'h3'
 import path from 'node:path'
-import { join } from 'path'
 import { RadixRouter } from 'radix3'
-import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { ViteDevServer } from 'vite'
 import { DEV_ENV } from '../../cli/dev'
-import { RouteData } from './fsRouteWatcher'
+import { PageAttrs, RouteData } from './fsRouteWatcher'
+
+export const hyperLoaderDataVariableName = 'hyperLoaderData'
 
 export const transformPageContent = async (vite: ViteDevServer, routeData: RouteData & { pageOnly: boolean }) => {
   const filePath = routeData.filePath
   const pageModule = await vite.ssrLoadModule(filePath)
-  const hasLayout = fs.existsSync(join(process.cwd(), 'index.tsx'))
 
   if (!pageModule.page) {
     vite.ws.send({
@@ -27,19 +25,25 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
   return (
     await vite.pluginContainer.transform(
       `
-			imp { page, loader } from ${JSON.stringify(filePath)};
-			imp RouterContext from 'hyper/router-context'
-			${hasLayout ? 'imp {layout as Layout} from "/index.tsx"' : ''}
+			imp { page as Page, loader } from ${JSON.stringify(filePath)};
 			${
         routeData.pageOnly
-          ? `export { page }`
+          ? `export { page: Page }`
           : `
+			// imp RouterContext from 'hyper/router-context'
 			imp ReactDOM from 'react-dom/client';
-			window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"), <RouterContext>
-			${hasLayout ? '<Layout>' : ''}
-			{page()}
-			${hasLayout ? '</Layout>' : ''}
-			</RouterContext>)`
+      imp {PageProvider} from 'hyper/page'
+
+			window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
+			// <RouterContext>{
+				<PageProvider>
+					<Page />
+				</PageProvider>
+			// }</RouterContext>
+
+			)
+
+			`
       }
 			`.replaceAll('imp', 'import'),
       filePath
@@ -72,25 +76,31 @@ export const pageJsBundleHandler = (vite: ViteDevServer, router: RadixRouter<Rou
   })
 }
 
-export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: string) => {
-  let pageModule: any = null
+export const loadPageModules = async (filePath: string, vite: ViteDevServer | null) => {
   if (process.env.NODE_ENV === DEV_ENV && vite !== null) {
-    pageModule = await vite.ssrLoadModule(filePath)
+    return await vite.ssrLoadModule(filePath)
   } else {
-    pageModule = await import(path.join(process.cwd(), '.hyper', 'server-bundles', filePath))
+    return await import(/* @vite-ignore */ path.join(process.cwd(), '.hyper', 'server-bundles', filePath))
   }
-  const hasLayout = fs.existsSync(join(process.cwd(), 'index.tsx'))
-  let Layout = React.Fragment
+}
 
-  if (hasLayout && vite) {
-    const content = (await vite.ssrLoadModule(join(process.cwd(), 'index.tsx'))).layout
-    Layout = content.layout || React.Fragment
+export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: string, pageAttrs: PageAttrs) => {
+  let pageModule = await loadPageModules(filePath, vite)
+
+  let loaderData = {}
+  const loader = pageModule.loader
+  if (loader) {
+    loaderData = await loader()
+    pageAttrs.scripts.push({
+      dangerouslySetInnerHTML: { __html: `window.${hyperLoaderDataVariableName} = ${JSON.stringify(loaderData)}` },
+    })
   }
 
   return async () => {
     if (!pageModule.page) {
       return ''
     }
-    return ReactDOMServer.renderToString(<Layout>{pageModule.page()}</Layout>)
+    const Page = pageModule.page
+    return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }

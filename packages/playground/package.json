@@ -7,7 +7,8 @@
     "dev": "nodemon -w ../hyper/dist --exec 'yarn hyper:dev'",
     "hyper:dev": "hyper dev",
     "build": "nodemon -w ../hyper/dist --exec 'yarn hyper:build'",
-    "hyper:build": "hyper build"
+    "hyper:build": "hyper build",
+    "preview": "hyper preview"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.15",
@@ -17,7 +18,9 @@
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {
+    "@prisma/client": "^5.3.1",
     "dotenv": "^16.3.1",
+    "prisma": "^5.3.1",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0"

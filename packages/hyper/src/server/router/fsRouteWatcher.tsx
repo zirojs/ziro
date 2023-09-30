@@ -1,11 +1,12 @@
-import { App, eventHandler, getRequestURL } from 'h3'
+import { App, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
 import { readFileSync } from 'node:fs'
 import path from 'path'
 import { createRouter } from 'radix3'
+import ReactDOMServer from 'react-dom/server'
 import { ViteDevServer } from 'vite'
 import template from '../../assets/index.html'
 import { DEV_ENV } from '../../cli/dev'
-import { pageJsBundleHandler, pageSSRRenderer } from './page-renderer'
+import { loadPageModules, pageJsBundleHandler, pageSSRRenderer } from './page-renderer'
 
 const readJsonFile = (filepath: string) => JSON.parse(readFileSync(new URL(filepath, import.meta.url), { encoding: 'utf-8' }))
 
@@ -91,16 +92,29 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
       if (routeData) {
         let render, htmlContent
 
+        const pageAttrs: PageAttrs = { scripts: [], links: [] }
+
         if (process.env.NODE_ENV === DEV_ENV && vite) htmlContent = await vite.transformIndexHtml(event.path, template)
         else htmlContent = template
 
-        render = await pageSSRRenderer(vite, routeData.filePath)
+        render = await pageSSRRenderer(vite, routeData.filePath, pageAttrs)
 
         const appHtml = await render()
         let html = htmlContent.replace(`<!--ssr-outlet-->`, appHtml)
 
-        if (process.env.NODE_ENV === DEV_ENV) html = html.replace(`<!--hyper-data-->`, `<script type="module" src="/_hyper.js?page=${pathname}"></script>`)
-        else html = html.replace(`<!--hyper-data-->`, `<script type="module" src="/${routeData.filePath.replace('.server', '')}"></script>`)
+        if (process.env.NODE_ENV === DEV_ENV) {
+          pageAttrs.scripts.push({
+            type: 'module',
+            src: `/_hyper.js?page=${pathname}`,
+          })
+        } else {
+          pageAttrs.scripts.push({
+            type: 'module',
+            src: `/${routeData.filePath.replace('.server', '')}`,
+          })
+        }
+
+        html = attachPageAttrs(html, pageAttrs)
         return html
       }
     })
@@ -108,4 +122,77 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
 
   // generate route specific js file
   if (process.env.NODE_ENV === DEV_ENV && vite) app.use('/_hyper.js', pageJsBundleHandler(vite, router))
+
+  app.use(
+    '/api',
+    eventHandler(async (event) => {
+      const { page } = await getValidatedQuery<{ page: string }>(event, (data) => {
+        const page = (data as { page: string }).page
+
+        return new Promise((resolve, reject) => {
+          if (page && router.lookup(page)) resolve({ page })
+          else {
+            reject('page path is not valid!')
+          }
+        })
+      })
+
+      const pageInfo = router.lookup(page)
+      let pageModule = await loadPageModules(pageInfo?.filePath!, vite)
+
+      if (event.method === 'POST') {
+        const action = pageModule.action
+        const data = await readMultipartFormData(event)
+
+        if (data && action) {
+          try {
+            const fields: any = {}
+            const multipartFormData = await readMultipartFormData(event)
+            if (multipartFormData)
+              for (const field of multipartFormData) {
+                if (field.name && !field.filename) fields[field.name] = field.data.toString()
+                if (field.name && field.filename) fields[field.name] = field
+              }
+            return await action(fields, event)
+          } catch (err) {
+            return
+          }
+        }
+      } else if (event.method === 'GET') {
+        const loader = pageModule.loader
+
+        return loader(event)
+      }
+      return {}
+    })
+  )
+}
+
+export type PageAttrs = {
+  scripts: Record<string, any>[]
+  links: Record<string, any>[]
+}
+
+const attachPageAttrs = (html: string, pageAttrs: PageAttrs): string => {
+  html = html.replace(
+    `<!--hyper-links-->`,
+    ReactDOMServer.renderToString(
+      <>
+        {pageAttrs.links.map((link, id) => {
+          return <link key={id} {...link} />
+        })}
+      </>
+    )
+  )
+  html = html.replace(
+    `<!--hyper-scripts-->`,
+    ReactDOMServer.renderToString(
+      <>
+        {pageAttrs.scripts.map((link, id) => {
+          return <script key={id} {...link} />
+        })}
+      </>
+    )
+  )
+  return html
 }
