@@ -1,10 +1,11 @@
 import { defaultContentType, eventHandler, getValidatedQuery } from 'h3'
-import path from 'node:path'
 import { RadixRouter } from 'radix3'
 import ReactDOMServer from 'react-dom/server'
+import { joinURL } from 'ufo'
 import { ViteDevServer } from 'vite'
-import { DEV_ENV } from '../../cli/dev'
-import { PageAttrs, RouteData } from './fsRouteWatcher'
+import { RouteData } from '../lib/RouterObj'
+import { DEV_ENV } from '../lib/constants'
+import { PageAttrs } from '../lib/htmlInjector'
 
 export const hyperLoaderDataVariableName = 'hyperLoaderData'
 
@@ -80,7 +81,7 @@ export const loadPageModules = async (filePath: string, vite: ViteDevServer | nu
   if (process.env.NODE_ENV === DEV_ENV && vite !== null) {
     return await vite.ssrLoadModule(filePath)
   } else {
-    return await import(/* @vite-ignore */ path.join(process.cwd(), '.hyper', 'server-bundles', filePath))
+    return await import(/* @vite-ignore */ joinURL(process.cwd(), '.hyper', 'server-bundles', filePath))
   }
 }
 
@@ -89,10 +90,17 @@ export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: stri
 
   let loaderData = {}
   const loader = pageModule.loader
-  if (loader) {
+  if (typeof loader === 'function' && loader) {
     loaderData = await loader()
     pageAttrs.scripts.push({
       dangerouslySetInnerHTML: { __html: `window.${hyperLoaderDataVariableName} = ${JSON.stringify(loaderData)}` },
+    })
+  }
+
+  const meta = pageModule.meta
+  if (typeof meta === 'function' && meta) {
+    pageAttrs.meta = meta({
+      loaderData,
     })
   }
 

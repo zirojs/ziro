@@ -1,5 +1,7 @@
 import { runServer } from './dev'
 
-export const preview = () => {
-  runServer()
+export const bootstrapHyperPreviewApp = async () => {
+  const { app } = await runServer()
+
+  return { app }
 }

@@ -8,21 +8,26 @@
     "hyper:dev": "hyper dev",
     "build": "nodemon -w ../hyper/dist --exec 'yarn hyper:build'",
     "hyper:build": "hyper build",
-    "preview": "hyper preview"
+    "preview": "hyper preview",
+    "cloudflare:dev": "wrangler pages dev ./.hyper --compatibility-date=2023-09-22 --compatibility-flags=\"nodejs_compat\"",
+    "cloudflare:deploy": "wrangler pages deploy ./.hyper"
   },
   "devDependencies": {
+    "@rollup/plugin-multi-entry": "^6.0.0",
     "autoprefixer": "^10.4.15",
     "hyper": "0.0.1",
+    "netlify-cli": "^16.4.2",
     "nodemon": "^3.0.1",
     "postcss": "^8.4.29",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^3.3.3",
+    "wrangler": "^3.10.1"
   },
   "dependencies": {
     "@prisma/client": "^5.3.1",
-    "dotenv": "^16.3.1",
+    "@prisma/extension-accelerate": "^0.6.2",
+    "h3": "^1.8.2",
     "prisma": "^5.3.1",
     "react": "^18.2.0",
-    "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0"
   }
 }

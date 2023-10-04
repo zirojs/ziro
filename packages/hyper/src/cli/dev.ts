@@ -4,11 +4,10 @@ import { listen } from 'listhen'
 import path from 'path'
 import sirv from 'sirv'
 import { ViteDevServer, createServer as createViteServer } from 'vite'
+import { DEV_ENV } from '../server/lib/constants'
 import { setupFsRoutes } from '../server/router/fsRouteWatcher'
 
-export const DEV_ENV = 'development'
-
-const bootstrap = async () => {
+export const bootstrapHyperApp = async () => {
   const app = createApp()
   let vite: ViteDevServer | null = null
 
@@ -46,10 +45,10 @@ const bootstrap = async () => {
 }
 
 export const runServer = async () => {
-  return bootstrap().then(async ({ app, vite }) => {
+  return bootstrapHyperApp().then(async ({ app, vite }) => {
     const listener = await listen(toNodeListener(app), { port: 3000, showURL: false, hostname: '0.0.0.0' })
-    // console.clear()
-    console.log(`${chalk.yellowBright.bold('⚡️ Hyper ')} ${chalk.green('[Development]')}`)
+    process.env.NODE_ENV !== DEV_ENV && console.clear()
+    console.log(`${chalk.yellowBright.bold('⚡️ Hyper ')} ${chalk.green(process.env.NODE_ENV === DEV_ENV ? '[Development]' : '[Production]')}`)
     console.log()
     console.log(`Running on: ${chalk.green(listener.url)}`)
     return { listener, app, vite }

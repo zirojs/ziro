@@ -19,5 +19,5 @@ export const defaultBuildConfig: InlineConfig = {
 }
 
 export const hyperBuild = async () => {
-  Promise.all([buildClientHydration(), buildServerBundles()])
+  await Promise.all([buildClientHydration(), buildServerBundles()])
 }

@@ -1,51 +1,14 @@
 import { App, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
-import { readFileSync } from 'node:fs'
-import path from 'path'
 import { createRouter } from 'radix3'
-import ReactDOMServer from 'react-dom/server'
+import { joinURL } from 'ufo'
 import { ViteDevServer } from 'vite'
 import template from '../../assets/index.html'
-import { DEV_ENV } from '../../cli/dev'
-import { loadPageModules, pageJsBundleHandler, pageSSRRenderer } from './page-renderer'
-
-const readJsonFile = (filepath: string) => JSON.parse(readFileSync(new URL(filepath, import.meta.url), { encoding: 'utf-8' }))
-
-const pathGenerator = (directories: Record<string, string[]>) => {
-  // This function generates radix3 compatible route paths based on file system
-  // The file system rules follows as bellow
-
-  // index.(.*)			 => / 			 	matches only root paths
-  // [slug].(.*) 		 => /:slug 		matches named routes (e.g. /a and /b, not /a/b).
-  // [..slug].(.*) 	 => /**:slug  named wild card route
-
-  // docs: https://github.com/unjs/radix3#usage
-
-  const namedRouteRegex = /\[(?!\.\.\.)(.*)\]/s
-  const namedWildcardRouteRegex = /\[(\.\.\.)(.*)\]/s
-  const rootRegex = /index\.([a-zA-Z0-9]+$)/s
-
-  const paths: Record<string, string> = {}
-  Object.keys(directories).forEach((dirPath) => {
-    if (process.env.NODE_ENV === DEV_ENV && !dirPath.startsWith(path.join(process.cwd(), '/pages'))) return
-
-    directories[dirPath].map((filename) => {
-      const dirPrettyPath = dirPath.replace(path.join(process.cwd(), '/pages'), '')
-      if (rootRegex.test(filename)) paths[path.join(dirPrettyPath, '/')] = path.join(dirPath, filename)
-      if (namedRouteRegex.test(filename)) {
-        const m = namedRouteRegex.exec(filename)
-        const routeName = m?.[1]
-        paths[path.join(dirPrettyPath, `/:${routeName}`)] = path.join(dirPath, filename)
-      }
-      if (namedWildcardRouteRegex.test(filename)) {
-        const m = namedWildcardRouteRegex.exec(filename)
-        const routeName = m?.[2]
-        paths[path.join(dirPrettyPath, `/**:${routeName}`)] = path.join(dirPath, filename)
-      }
-    })
-  })
-  return paths
-}
-export type RouteData = { filePath: string }
+import { RouteData } from '../lib/RouterObj'
+import { DEV_ENV } from '../lib/constants'
+import { PageAttrs, attachPageAttrs } from '../lib/htmlInjector'
+import { pathGenerator } from '../lib/pathGenerator'
+import { readJsonFile } from '../lib/readJsonFile'
+import { loadPageModules, pageJsBundleHandler, pageSSRRenderer } from './pageRenderer'
 
 export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
   let router = createRouter<RouteData>()
@@ -57,7 +20,6 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
       // add routes again
       const paths = pathGenerator(vite.watcher.getWatched())
       Object.keys(paths).forEach((route) => {
-        console.log('route inserted: ', route)
         router.insert(route, { filePath: paths[route] })
       })
     }
@@ -65,7 +27,7 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
     vite.watcher.on('ready', routerConfigure)
     vite.watcher.on('all', routerConfigure)
   } else {
-    const data = readJsonFile(path.join(process.cwd(), '.hyper', 'server-bundles', 'manifest.json'))
+    const data = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', 'manifest.json'))
     const pages: Record<string, string[]> = {}
 
     for (const file of Object.keys(data))
@@ -78,8 +40,7 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
     const paths = pathGenerator(pages)
 
     Object.keys(paths).forEach((route) => {
-      console.log('route inserted: ', route, data[`pages/${paths[route]}`].file)
-      router.insert('/' + route, { filePath: data[`pages/${paths[route]}`].file })
+      router.insert('/' + route, { filePath: data[`pages/${paths[route]}`].file, manifestData: data[`pages/${paths[route]}`] })
     })
   }
 
@@ -87,12 +48,12 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
   app.use(
     eventHandler(async (event) => {
       const pathname = getRequestURL(event).pathname
-      console.log(pathname)
       const routeData = router.lookup(pathname)
+
       if (routeData) {
         let render, htmlContent
 
-        const pageAttrs: PageAttrs = { scripts: [], links: [] }
+        const pageAttrs: PageAttrs = { scripts: [], links: [], meta: {} }
 
         if (process.env.NODE_ENV === DEV_ENV && vite) htmlContent = await vite.transformIndexHtml(event.path, template)
         else htmlContent = template
@@ -112,6 +73,15 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
             type: 'module',
             src: `/${routeData.filePath.replace('.server', '')}`,
           })
+          if (routeData.manifestData?.css) {
+            routeData.manifestData?.css.map((href) => {
+              pageAttrs.links.push({
+                href,
+                rel: 'stylesheet',
+                type: 'text/css',
+              })
+            })
+          }
         }
 
         html = attachPageAttrs(html, pageAttrs)
@@ -166,33 +136,4 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
       return {}
     })
   )
-}
-
-export type PageAttrs = {
-  scripts: Record<string, any>[]
-  links: Record<string, any>[]
-}
-
-const attachPageAttrs = (html: string, pageAttrs: PageAttrs): string => {
-  html = html.replace(
-    `<!--hyper-links-->`,
-    ReactDOMServer.renderToString(
-      <>
-        {pageAttrs.links.map((link, id) => {
-          return <link key={id} {...link} />
-        })}
-      </>
-    )
-  )
-  html = html.replace(
-    `<!--hyper-scripts-->`,
-    ReactDOMServer.renderToString(
-      <>
-        {pageAttrs.scripts.map((link, id) => {
-          return <script key={id} {...link} />
-        })}
-      </>
-    )
-  )
-  return html
 }

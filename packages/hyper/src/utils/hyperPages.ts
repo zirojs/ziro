@@ -1,7 +1,7 @@
-import { join } from 'node:path'
+import { joinURL } from 'ufo'
 
 export const isHyperPage = (pagePath: string) => {
-  return pagePath.startsWith(join(process.cwd(), 'pages'))
+  return pagePath.startsWith(joinURL(process.cwd(), 'pages')) && /\.(js|mjs|jsx|ts|tsx)$/.test(pagePath)
 }
 
 export const generateBuildDirectoryFromFilename = (filename: string) => {

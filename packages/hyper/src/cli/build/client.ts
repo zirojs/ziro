@@ -1,6 +1,6 @@
 import babel from '@babel/core'
 import { glob } from 'glob'
-import path from 'node:path'
+import { joinURL } from 'ufo'
 import { build } from 'vite'
 import { extend } from '../../utils/extendObject'
 import { generateBuildDirectoryFromFilename, isHyperPage } from '../../utils/hyperPages'
@@ -13,11 +13,11 @@ export const buildClientHydration = async () => {
       build: {
         outDir: '.hyper/client-bundles',
         rollupOptions: {
-          input: await glob(path.resolve(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' }),
+          input: await glob(joinURL(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' }),
           output: {
             entryFileNames(chunkInfo) {
-              if (chunkInfo.facadeModuleId?.startsWith(path.join(process.cwd(), 'pages'))) {
-                return path.join(generateBuildDirectoryFromFilename(chunkInfo.facadeModuleId), `${chunkInfo.name}.mjs`)
+              if (chunkInfo.facadeModuleId?.startsWith(joinURL(process.cwd(), 'pages'))) {
+                return joinURL(generateBuildDirectoryFromFilename(chunkInfo.facadeModuleId), `${chunkInfo.name}.mjs`)
               }
               return `${chunkInfo.name}.mjs`
             },
@@ -39,7 +39,6 @@ export const buildClientHydration = async () => {
                 presets: ['@babel/preset-typescript'],
                 plugins: [hyperBabelClientBundle],
               })?.code!
-              console.log(clientBundle)
             }
             return {
               code: clientBundle,

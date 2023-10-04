@@ -1,18 +1,20 @@
-import { PrismaClient } from '@prisma/client'
 import Link from 'hyper/link'
 import { HyperPage, useAction, usePageLoader } from 'hyper/page'
 import { prisma } from '../prisma'
-// import '../style.css'
+import '../style.css'
 
 export const loader = async () => {
-  const posts = await prisma.post.findMany()
-
+  const posts = await prisma.post.findMany({
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
+  })
   prisma.$disconnect()
   return { message: 'hello world', posts }
 }
 
 export const action = async (fields: any) => {
-  const prisma = new PrismaClient()
   try {
     await prisma.post.create({
       data: {
@@ -25,6 +27,14 @@ export const action = async (fields: any) => {
     console.log(err)
   }
   return { ok: true }
+}
+
+export const meta = ({ loaderData }: { loaderData: Awaited<ReturnType<typeof loader>> }) => {
+  return {
+    title: `${loaderData.posts.length} Posts | Home | Hyper playground`,
+    description: 'a new ssr website',
+    keywords: 'something fun',
+  }
 }
 
 export const loading = () => {}
