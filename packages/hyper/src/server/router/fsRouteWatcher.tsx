@@ -108,10 +108,10 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
       })
 
       const pageInfo = router.lookup(page)
-      let pageModule = await loadPageModules(pageInfo?.filePath!, vite)
+      let [clientModule, serverModule] = await loadPageModules(pageInfo?.filePath!, vite)
 
       if (event.method === 'POST') {
-        const action = pageModule.action
+        const action = serverModule.action
         const data = await readMultipartFormData(event)
 
         if (data && action) {
@@ -129,7 +129,7 @@ export const setupFsRoutes = async (vite: ViteDevServer | null, app: App) => {
           }
         }
       } else if (event.method === 'GET') {
-        const loader = pageModule.loader
+        const loader = serverModule.loader
 
         return loader(event)
       }

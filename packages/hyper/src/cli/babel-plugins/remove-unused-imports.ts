@@ -7,7 +7,6 @@ export const removeUnusedImports = (): PluginItem => {
       ImportDeclaration(path) {
         const importName = path.node.source.value
         const importVariable = path.node.specifiers
-
         const references = path.scope.getBinding(importName)?.referencePaths || []
         if (references.length === 0 && importVariable.length) {
           path.remove()

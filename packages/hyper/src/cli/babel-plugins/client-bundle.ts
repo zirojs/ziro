@@ -8,7 +8,7 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
       if (
         (path.node.declarations[0].id as types.Identifier).name === 'action' ||
         (path.node.declarations[0].id as types.Identifier).name === 'loader' ||
-        (path.node.declarations[0].id as types.Identifier).name === 'generatePaths'
+        (path.node.declarations[0].id as types.Identifier).name === 'meta'
       ) {
         path.remove()
       }

@@ -8,7 +8,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = "postgres://Narixius:LCu7NGKE3TPB@ep-throbbing-scene-16447208-pooler.eu-central-1.aws.neon.tech/neondb?pgbouncer=true&connect_timeout=10"
-  directUrl = "postgres://Narixius:LCu7NGKE3TPB@ep-throbbing-scene-16447208.eu-central-1.aws.neon.tech/neondb?connect_timeout=10"
+  directUrl = "postgres://Narixius:LCu7NGKE3TPB@ep-throbbing-scene-16447208-pooler.eu-central-1.aws.neon.tech/neondb?pgbouncer=true&connect_timeout=10"
 }
 
 model Post {

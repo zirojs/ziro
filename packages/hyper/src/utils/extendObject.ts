@@ -1,5 +1,5 @@
 import { merge } from 'lodash-es'
 
 export const extend = <Y, T>(source: Y, obj: T & Y) => {
-  return merge(obj, source)
+  return merge(source, obj)
 }

@@ -4,12 +4,7 @@ import { prisma } from '../prisma'
 import '../style.css'
 
 export const loader = async () => {
-  const posts = await prisma.post.findMany({
-    cacheStrategy: {
-      ttl: 30,
-      swr: 60,
-    },
-  })
+  const posts = await prisma.post.findMany()
   prisma.$disconnect()
   return { message: 'hello world', posts }
 }
@@ -37,7 +32,9 @@ export const meta = ({ loaderData }: { loaderData: Awaited<ReturnType<typeof loa
   }
 }
 
-export const loading = () => {}
+export const loading = () => {
+  return 'loading...'
+}
 
 export const error = () => {}
 

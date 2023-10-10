@@ -1,21 +1,22 @@
 import babel from '@babel/core'
-import fs from 'fs'
 import { glob } from 'glob'
 import path from 'path'
 import { joinURL } from 'ufo'
 import { build } from 'vite'
 import { extend } from '../../utils/extendObject'
-import { generateBuildDirectoryFromFilename, getFilename, isHyperPage } from '../../utils/hyperPages'
-import { removeUnusedImports } from '../babel-plugins/remove-unused-imports'
+import { generateBuildDirectoryFromFilename, isHyperPage } from '../../utils/hyperPages'
+import { hyperBabelClientBundle } from '../babel-plugins/client-bundle'
 import { hyperBabelServerBundle } from '../babel-plugins/server-bundle'
 import { defaultBuildConfig } from '../build'
 
+const minify = true
+
 export const buildServerBundles = async () => {
-  return build(
+  await build(
     extend(defaultBuildConfig, {
       build: {
         ssr: true,
-        // ssrEmitAssets: true,
+        minify,
         outDir: '.hyper/server-bundles',
         rollupOptions: {
           input: await glob(path.resolve(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' }),
@@ -31,7 +32,7 @@ export const buildServerBundles = async () => {
       },
       plugins: [
         {
-          name: 'transform-client-bundles',
+          name: 'hyper/server/transform-client-bundles',
           enforce: 'pre',
           transform(code, id) {
             let clientBundle = code
@@ -42,22 +43,57 @@ export const buildServerBundles = async () => {
                   esmodules: true,
                 },
                 presets: ['@babel/preset-typescript'],
-                plugins: [],
+                plugins: [hyperBabelClientBundle],
               })?.code!
+            }
+            return {
+              code: clientBundle,
+            }
+          },
+        },
+      ],
+    })
+  )
 
-              const serverBundle = babel.transformSync(code, {
+  await build(
+    extend(defaultBuildConfig, {
+      build: {
+        manifest: false,
+        minify,
+        ssrEmitAssets: true,
+        ssr: true,
+        outDir: '.hyper/server-bundles',
+        rollupOptions: {
+          input: await glob(path.resolve(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' }),
+          output: {
+            entryFileNames(chunkInfo) {
+              if (chunkInfo.facadeModuleId?.startsWith(joinURL(process.cwd(), 'pages'))) {
+                return joinURL(generateBuildDirectoryFromFilename(chunkInfo.facadeModuleId), `server.${chunkInfo.name}.mjs`)
+              }
+              return `server.${chunkInfo.name}.mjs`
+            },
+          },
+        },
+      },
+      plugins: [
+        {
+          name: 'hyper/server/transform-server-bundles',
+          enforce: 'pre',
+          transform(code, id) {
+            let serverBundle = code
+
+            if (isHyperPage(id)) {
+              serverBundle = babel.transformSync(code, {
                 filename: id,
                 targets: {
                   esmodules: true,
                 },
                 presets: ['@babel/preset-typescript'],
-                plugins: [removeUnusedImports, hyperBabelServerBundle],
+                plugins: [hyperBabelServerBundle],
               })?.code!
-              fs.mkdirSync(joinURL('.hyper/server-bundles', generateBuildDirectoryFromFilename(id)), { recursive: true })
-              fs.writeFileSync(joinURL('.hyper/server-bundles', generateBuildDirectoryFromFilename(id), getFilename(id)), serverBundle, { encoding: 'utf-8' })
             }
             return {
-              code: clientBundle,
+              code: serverBundle,
             }
           },
         },

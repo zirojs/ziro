@@ -36,7 +36,7 @@ export default defineBuildConfig([
     },
   },
   {
-    entries: ['src/cli/edge.ts'],
+    entries: ['src/cli/edge/index.ts'],
 
     rollup: {
       cjsBridge: true,

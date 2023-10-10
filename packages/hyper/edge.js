@@ -1,45 +1,45 @@
 // node_modules/ufo/dist/index.mjs
-var r = String.fromCharCode;
-var TRAILING_SLASH_RE = /\/$|\/\?/;
-function hasTrailingSlash(input = "", queryParameters = false) {
+var r = String.fromCharCode
+var TRAILING_SLASH_RE = /\/$|\/\?/
+function hasTrailingSlash(input = '', queryParameters = false) {
   if (!queryParameters) {
-    return input.endsWith("/");
+    return input.endsWith('/')
   }
-  return TRAILING_SLASH_RE.test(input);
+  return TRAILING_SLASH_RE.test(input)
 }
-function withTrailingSlash(input = "", queryParameters = false) {
+function withTrailingSlash(input = '', queryParameters = false) {
   if (!queryParameters) {
-    return input.endsWith("/") ? input : input + "/";
+    return input.endsWith('/') ? input : input + '/'
   }
   if (hasTrailingSlash(input, true)) {
-    return input || "/";
+    return input || '/'
   }
-  const [s0, ...s] = input.split("?");
-  return s0 + "/" + (s.length > 0 ? `?${s.join("?")}` : "");
+  const [s0, ...s] = input.split('?')
+  return s0 + '/' + (s.length > 0 ? `?${s.join('?')}` : '')
 }
 function isNonEmptyURL(url) {
-  return url && url !== "/";
+  return url && url !== '/'
 }
-var JOIN_LEADING_SLASH_RE = /^\.?\//;
+var JOIN_LEADING_SLASH_RE = /^\.?\//
 function joinURL(base, ...input) {
-  let url = base || "";
+  let url = base || ''
   for (const segment of input.filter((url2) => isNonEmptyURL(url2))) {
     if (url) {
-      const _segment = segment.replace(JOIN_LEADING_SLASH_RE, "");
-      url = withTrailingSlash(url) + _segment;
+      const _segment = segment.replace(JOIN_LEADING_SLASH_RE, '')
+      url = withTrailingSlash(url) + _segment
     } else {
-      url = segment;
+      url = segment
     }
   }
-  return url;
+  return url
 }
 
 // src/server/lib/readJsonFile.ts
-import { readFileSync } from "fs";
-var readJsonFile = (filepath) => JSON.parse(readFileSync(new URL(filepath, import.meta.url), { encoding: "utf-8" }));
+import { readFileSync } from 'fs'
+var readJsonFile = (filepath) => JSON.parse(readFileSync(new URL(filepath, import.meta.url), { encoding: 'utf-8' }))
 
 // src/cli/edge.ts
-var routes = readJsonFile(joinURL(process.cwd(), "server-bundles", "manifest.json"));
+var routes = readJsonFile(joinURL(process.cwd(), 'server-bundles', 'manifest.json'))
 var workerBase = `import { toWebHandler } from 'h3'
 import { joinURL } from 'ufo'
 import { bootstrapEdgeHyperApp } from '../server/edge'
@@ -63,13 +63,12 @@ export default {
       cloudflare: { env, ctx },
     })
   },
-}`;
-var importManifest = `const routes: Record<string, { file: string; module: any }> = await import('${joinURL(process.cwd(), "server-bundles", "manifest.json")}')`;
-var importPageModules = ``;
+}`
+var importManifest = `const routes: Record<string, { file: string; module: any }> = await import('${joinURL(process.cwd(), 'server-bundles', 'manifest.json')}')`
+var importPageModules = ``
 Object.keys(routes).forEach((key) => {
-  importPageModules += `routes["${key}"].module = import(${joinURL(process.cwd(), "server-bundles", routes[key].file)})
-`;
-});
-workerBase = workerBase.replace("<--import-manifest-->", importManifest);
-workerBase = workerBase.replace("<--import-page-modules-->", importPageModules);
-console.log(workerBase);
+  importPageModules += `routes["${key}"].module = import(${joinURL(process.cwd(), 'server-bundles', routes[key].file)})
+`
+})
+workerBase = workerBase.replace('<--import-manifest-->', importManifest)
+workerBase = workerBase.replace('<--import-page-modules-->', importPageModules)

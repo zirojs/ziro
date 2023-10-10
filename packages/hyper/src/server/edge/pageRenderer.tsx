@@ -76,14 +76,14 @@ export const pageJsBundleHandler = (vite: ViteDevServer, router: RadixRouter<Rou
 }
 
 export const loadPageModules = async (file: RouteData) => {
-  return file.manifestData!.clientModule
+  return [file.manifestData!.clientModule, file.manifestData!.serverModule]
 }
 
 export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => {
-  let pageModule = await loadPageModules(file)
+  let [clientBundle, serverBundle] = await loadPageModules(file)
 
   let loaderData = {}
-  const loader = pageModule.loader
+  const loader = serverBundle.loader
   if (typeof loader === 'function' && loader) {
     loaderData = await loader()
     pageAttrs.scripts.push({
@@ -91,7 +91,7 @@ export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => 
     })
   }
 
-  const meta = pageModule.meta
+  const meta = serverBundle.meta
   if (typeof meta === 'function' && meta) {
     pageAttrs.meta = meta({
       loaderData,
@@ -99,10 +99,10 @@ export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => 
   }
 
   return async () => {
-    if (!pageModule.page) {
+    if (!clientBundle.page) {
       return ''
     }
-    const Page = pageModule.page
+    const Page = clientBundle.page
     return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }

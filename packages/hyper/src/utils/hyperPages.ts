@@ -1,7 +1,7 @@
 import { joinURL } from 'ufo'
 
 export const isHyperPage = (pagePath: string) => {
-  return pagePath.startsWith(joinURL(process.cwd(), 'pages')) && /\.(js|mjs|jsx|ts|tsx)$/.test(pagePath)
+  return pagePath.includes(joinURL('pages', '/')) && /\.(js|mjs|jsx|ts|tsx)$/.test(pagePath)
 }
 
 export const generateBuildDirectoryFromFilename = (filename: string) => {
@@ -12,6 +12,7 @@ export const generateBuildDirectoryFromFilename = (filename: string) => {
     .join('/')
 }
 
-export const getFilename = (filename: string) => {
-  return filename.split('/').slice(-1).join('/')
+export const getFilename = (filename: string, extension?: string) => {
+  if (!extension) return filename.split('/').slice(-1).join('/')
+  return filename.split('/').slice(-1).join('/').split('.')[0] + '.' + extension
 }

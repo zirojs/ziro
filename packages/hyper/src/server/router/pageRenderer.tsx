@@ -79,17 +79,22 @@ export const pageJsBundleHandler = (vite: ViteDevServer, router: RadixRouter<Rou
 
 export const loadPageModules = async (filePath: string, vite: ViteDevServer | null) => {
   if (process.env.NODE_ENV === DEV_ENV && vite !== null) {
-    return await vite.ssrLoadModule(filePath)
+    const module = await vite.ssrLoadModule(filePath)
+    return [module, module]
   } else {
-    return await import(/* @vite-ignore */ joinURL(process.cwd(), '.hyper', 'server-bundles', filePath))
+    const client = await import(/* @vite-ignore */ joinURL(process.cwd(), '.hyper', 'server-bundles', filePath))
+    const serverPage = filePath.split('/')
+    serverPage[serverPage.length - 1] = 'server.' + serverPage[serverPage.length - 1]
+    const server = await import(/* @vite-ignore */ joinURL(process.cwd(), '.hyper', 'server-bundles', serverPage.join('/')))
+    return [client, server]
   }
 }
 
 export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: string, pageAttrs: PageAttrs) => {
-  let pageModule = await loadPageModules(filePath, vite)
+  let [clientModule, serverModule] = await loadPageModules(filePath, vite)
 
   let loaderData = {}
-  const loader = pageModule.loader
+  const loader = serverModule.loader
   if (typeof loader === 'function' && loader) {
     loaderData = await loader()
     pageAttrs.scripts.push({
@@ -97,7 +102,7 @@ export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: stri
     })
   }
 
-  const meta = pageModule.meta
+  const meta = serverModule.meta
   if (typeof meta === 'function' && meta) {
     pageAttrs.meta = meta({
       loaderData,
@@ -105,10 +110,10 @@ export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: stri
   }
 
   return async () => {
-    if (!pageModule.page) {
+    if (!clientModule.page) {
       return ''
     }
-    const Page = pageModule.page
+    const Page = clientModule.page
     return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }
