@@ -7,6 +7,16 @@ import { ViteDevServer, createServer as createViteServer } from 'vite'
 import { DEV_ENV } from '../server/lib/constants'
 import { setupFsRoutes } from '../server/router/fsRouteWatcher'
 
+// we need to create a queue of loaders for a specific route
+const hyperApp = {
+  createPage: (options: any) => {
+    // add the page to the routes
+  },
+  createMiddleware: (urlPattern: any, loader: any) => {
+    // add the loader to the routes
+  },
+}
+
 export const bootstrapHyperApp = async () => {
   const app = createApp()
   let vite: ViteDevServer | null = null

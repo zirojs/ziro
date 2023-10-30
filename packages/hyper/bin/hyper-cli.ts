@@ -1,10 +1,10 @@
 #!/usr/bin/env node --no-warnings
 import { Command, Option } from 'commander'
 import { name, version } from '../package.json' assert { type: 'json' }
-import { hyperBuild } from '../src/cli/build'
-import { runServer } from '../src/cli/dev'
-import { edgeProviders, generateEdgeBundle } from '../src/cli/edge'
-
+import { hyperBuild } from '../src/HyperApp/build'
+import { runHyperDevServer } from '../src/HyperApp/runners/dev'
+import { runHyperProductionServer } from '../src/HyperApp/runners/production'
+import { edgeProviders } from '../src/cli/edge'
 const program = new Command()
 program.name(name).description('React SSR Framework').version(version)
 
@@ -13,7 +13,7 @@ program
   .description('run hyper dev server')
   .action(async (str, options) => {
     process.env.NODE_ENV = 'development'
-    runServer()
+    runHyperDevServer()
   })
 program
   .command('build')
@@ -22,9 +22,9 @@ program
   .action(async (options) => {
     process.env.NODE_ENV = 'production'
     await hyperBuild()
-    if (options.edge) {
-      await generateEdgeBundle(options.edge)
-    }
+    // if (options.edge) {
+    //   await generateEdgeBundle(options.edge)
+    // }
   })
 
 program
@@ -32,7 +32,7 @@ program
   .description('preview hyper project')
   .action(async (str, options) => {
     process.env.NODE_ENV = 'production'
-    runServer()
+    await runHyperProductionServer()
   })
 
 program.parse(process.argv)

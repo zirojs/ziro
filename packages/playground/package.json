@@ -13,7 +13,7 @@
     "cloudflare:deploy": "wrangler pages deploy ./.hyper"
   },
   "devDependencies": {
-    "@rollup/plugin-multi-entry": "^6.0.0",
+    "@babel/core": "^7.23.2",
     "autoprefixer": "^10.4.15",
     "hyper": "0.0.1",
     "netlify-cli": "^16.4.2",
@@ -23,11 +23,9 @@
     "wrangler": "^3.10.1"
   },
   "dependencies": {
-    "@libsql/client": "^0.3.5",
-    "@prisma/adapter-libsql": "^5.4.0",
+    "@babel/core": "^7.23.2",
     "@prisma/client": "^5.4.1",
     "@prisma/extension-accelerate": "^0.6.2",
-    "h3": "^1.8.2",
     "prisma": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

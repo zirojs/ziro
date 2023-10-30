@@ -11,6 +11,8 @@
 		"resolveJsonModule": true,
 		"rootDir": ".",
 		"jsx": "react-jsx",
-		"declaration": true
+		"declaration": true,
+		"noEmit": true,
+		"allowImportingTsExtensions": true
 	}
 }
