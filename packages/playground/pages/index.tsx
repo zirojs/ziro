@@ -32,12 +32,6 @@ export const meta = ({ loaderData }: { loaderData: Awaited<ReturnType<typeof loa
   }
 }
 
-export const loading = () => {
-  return 'loading...'
-}
-
-export const error = () => {}
-
 export const page: HyperPage = ({ loaderData }) => {
   const { refetch } = usePageLoader()
 

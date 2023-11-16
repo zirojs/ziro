@@ -46,7 +46,7 @@ export default defineBuildConfig([
     },
   },
   {
-    entries: ['src/HyperApp/runners/dev.ts', 'src/HyperApp/hyperApp.ts'],
+    entries: ['src/HyperApp/runners/dev.ts', 'src/HyperApp/runners/edge.ts', 'src/HyperApp/hyperApp.ts'],
     declaration: true,
     rollup: {
       cjsBridge: true,

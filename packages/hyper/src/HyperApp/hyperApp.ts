@@ -124,7 +124,7 @@ export type HyperPlugin = {
 }
 export type HyperConfig = {
   edge?: boolean
-  plugins: HyperPlugin[]
+  plugins?: HyperPlugin[]
 }
 export const defaultHyperconfig: Required<HyperConfig> = {
   edge: false,
