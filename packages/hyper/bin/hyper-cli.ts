@@ -1,7 +1,8 @@
-#!/usr/bin/env node --no-warnings
+#!/usr/bin/env node
 import { Command, Option } from 'commander'
 import { name, version } from '../package.json' assert { type: 'json' }
 import { hyperBuild } from '../src/HyperApp/build'
+import { generateEdgeBundle } from '../src/HyperApp/build/edge'
 import { runHyperDevServer } from '../src/HyperApp/runners/dev'
 import { runHyperProductionServer } from '../src/HyperApp/runners/production'
 import { edgeProviders } from '../src/cli/edge'
@@ -22,9 +23,9 @@ program
   .action(async (options) => {
     process.env.NODE_ENV = 'production'
     await hyperBuild()
-    // if (options.edge) {
-    //   await generateEdgeBundle(options.edge)
-    // }
+    if (options.edge) {
+      await generateEdgeBundle(options.edge)
+    }
   })
 
 program

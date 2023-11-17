@@ -1,6 +1,4 @@
-import chalk from 'chalk'
-import { H3Event, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData, toNodeListener } from 'h3'
-import { listen } from 'listhen'
+import { H3Event, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
 import ReactDOMServer from 'react-dom/server'
 import { isDevelopment } from 'std-env'
 import { joinURL } from 'ufo'
@@ -137,13 +135,4 @@ export const bootstrapH3Server = (app: HyperApp) => {
       return {}
     })
   )
-}
-
-export const runHyperApp = async (app: HyperApp) => {
-  await bootstrapH3Server(app)
-  const listener = await listen(toNodeListener(app.h3), { port: 3000, showURL: false, hostname: '0.0.0.0' })
-  isDevelopment && console.clear()
-  console.log(`${chalk.yellowBright.bold('⚡️ Hyper ')} ${chalk.green(isDevelopment ? '[Development]' : '[Production]')}`)
-  console.log()
-  console.log(`Running on: ${chalk.green(listener.url)}`)
 }

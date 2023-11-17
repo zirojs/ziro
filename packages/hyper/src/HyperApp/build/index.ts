@@ -41,7 +41,7 @@ export const hyperBuild = async () => {
   // build config file
   await build({
     bundle: true,
-    entryPoints: [joinURL(process.cwd(), 'hyper.config.ts')],
+    entryPoints: [joinURL(process.cwd(), 'hyper.config.js')],
     // outdir: joinURL(process.cwd(), '.hyper/'),
     outfile: joinURL(process.cwd(), '.hyper/', 'hyper.config.mjs'),
     minify: true,

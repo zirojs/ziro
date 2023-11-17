@@ -422,6 +422,11 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
+"@babel/parser@^7.1.0", "@babel/parser@^7.20.7":
+  version "7.23.3"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.23.3.tgz#0ce0be31a4ca4f1884b5786057cadcb6c3be58f9"
+  integrity sha512-uVsWNvlVsIninV2prNz/3lHCb+5CJ+e+IUBfbjToAHODtfGYLfCFuY4AU7TskI+dAKk+njsPiBjq1gKTvZOBaw==
+
 "@babel/parser@^7.21.8", "@babel/parser@^7.23.0":
   version "7.23.0"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.23.0.tgz#da950e622420bf96ca0d0f2909cdddac3acd8719"
@@ -1244,6 +1249,15 @@
     "@babel/types" "^7.23.0"
     debug "^4.1.0"
     globals "^11.1.0"
+
+"@babel/types@^7.0.0", "@babel/types@^7.20.7":
+  version "7.23.3"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.23.3.tgz#d5ea892c07f2ec371ac704420f4dcdb07b5f9598"
+  integrity sha512-OZnvoH2l8PK5eUvEcUyCt/sXgr/h+UWpVuBbOljwcrAgUl6lpchoQ++PHGyQy1AtYnVA6CEq3y5xeEI10brpXw==
+  dependencies:
+    "@babel/helper-string-parser" "^7.22.5"
+    "@babel/helper-validator-identifier" "^7.22.20"
+    to-fast-properties "^2.0.0"
 
 "@babel/types@^7.22.10", "@babel/types@^7.22.11", "@babel/types@^7.22.5":
   version "7.22.11"
@@ -4187,6 +4201,39 @@
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.4.tgz#0b92dcc0cc1c81f6f306a381f28e31b1a56536e9"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
+
+"@types/babel__core@^7.20.4":
+  version "7.20.4"
+  resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.4.tgz#26a87347e6c6f753b3668398e34496d6d9ac6ac0"
+  integrity sha512-mLnSC22IC4vcWiuObSRjrLd9XcBTGf59vUSoq2jkQDJ/QQ8PMI9rSuzE+aEV8karUMbskw07bKYoUJCKTUaygg==
+  dependencies:
+    "@babel/parser" "^7.20.7"
+    "@babel/types" "^7.20.7"
+    "@types/babel__generator" "*"
+    "@types/babel__template" "*"
+    "@types/babel__traverse" "*"
+
+"@types/babel__generator@*":
+  version "7.6.7"
+  resolved "https://registry.yarnpkg.com/@types/babel__generator/-/babel__generator-7.6.7.tgz#a7aebf15c7bc0eb9abd638bdb5c0b8700399c9d0"
+  integrity sha512-6Sfsq+EaaLrw4RmdFWE9Onp63TOUue71AWb4Gpa6JxzgTYtimbM086WnYTy2U67AofR++QKCo08ZP6pwx8YFHQ==
+  dependencies:
+    "@babel/types" "^7.0.0"
+
+"@types/babel__template@*":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@types/babel__template/-/babel__template-7.4.4.tgz#5672513701c1b2199bc6dad636a9d7491586766f"
+  integrity sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==
+  dependencies:
+    "@babel/parser" "^7.1.0"
+    "@babel/types" "^7.0.0"
+
+"@types/babel__traverse@*":
+  version "7.20.4"
+  resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.20.4.tgz#ec2c06fed6549df8bc0eb4615b683749a4a92e1b"
+  integrity sha512-mSM/iKUk5fDDrEV/e83qY+Cr3I1+Q3qqTuEn++HAWYjEa1+NxZr6CNrcJGf2ZTnq4HoFGC3zaTPZTobCzCFukA==
+  dependencies:
+    "@babel/types" "^7.20.7"
 
 "@types/body-parser@*":
   version "1.19.2"

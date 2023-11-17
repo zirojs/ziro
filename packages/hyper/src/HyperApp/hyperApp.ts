@@ -1,10 +1,10 @@
-import { loadConfig } from 'c12'
 import consola from 'consola'
 import { App as H3App, H3Event, Router, createApp, createRouter as createH3Router, eventHandler } from 'h3'
 import { RadixRouter, createRouter } from 'radix3'
 import { FC } from 'react'
 import { isDevelopment } from 'std-env'
 import { hyperRouteHandler } from './server'
+
 export enum Environment {
   DEV = 1,
   PRODUCTION = 2,
@@ -131,26 +131,27 @@ export const defaultHyperconfig: Required<HyperConfig> = {
   plugins: [],
 }
 
-export const bootstrapHyperApp = async (overrideConfig?: Required<HyperConfig>, routeParser?: (route: HyperRoute) => Promise<HyperRoute>): Promise<HyperApp> => {
+export const bootstrapHyperApp = async (config?: Required<HyperConfig>, routeParser?: (route: HyperRoute) => Promise<HyperRoute>): Promise<HyperApp> => {
   consola.wrapAll()
   consola.info('Starting Hyper App')
 
   console.log('')
   consola.start('Loading Config...')
-  const { config } = await loadConfig<Required<HyperConfig>>({
-    name: 'hyper',
-    defaultConfig: defaultHyperconfig,
-    async resolve() {
-      if (overrideConfig)
-        return {
-          config: overrideConfig,
-        }
-      else return null
-    },
-    jitiOptions: {
-      esmResolve: true,
-    },
-  })
+
+  // const { config } = await loadConfig<Required<HyperConfig>>({
+  //   name: 'hyper',
+  //   defaultConfig: defaultHyperconfig,
+  //   async resolve() {
+  //     if (overrideConfig)
+  //       return {
+  //         config: overrideConfig,
+  //       }
+  //     else return null
+  //   },
+  //   jitiOptions: {
+  //     esmResolve: true,
+  //   },
+  // })
   consola.success('Config loaded')
   console.log('')
 

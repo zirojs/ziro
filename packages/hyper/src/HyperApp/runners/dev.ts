@@ -1,10 +1,12 @@
 import { createRouter, eventHandler, fromNodeMiddleware, setHeaders } from 'h3'
 import { genImport } from 'knitwork'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
+import { joinURL } from 'ufo'
 import { ViteDevServer, createServer as createViteServer } from 'vite'
 import { pathGenerator } from '../../server/lib/pathGenerator'
-import { HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp } from '../hyperApp'
-import { runHyperApp } from '../server'
+import { HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
+import { runHyperApp } from '../serve'
 
 export const runHyperDevServer = async () => {
   const vite = await createViteServer({
@@ -31,6 +33,9 @@ export const runHyperDevServer = async () => {
     }
     return route
   }
+
+  let config = defaultHyperconfig
+  if (existsSync(joinURL(process.cwd(), 'hyper.config.js'))) config = await import(joinURL(process.cwd(), 'hyper.config.js'))
 
   const app = await bootstrapHyperApp(undefined, routeParser)
 

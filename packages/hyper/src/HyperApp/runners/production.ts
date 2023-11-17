@@ -3,8 +3,8 @@ import { existsSync, readFileSync } from 'node:fs'
 import { joinURL } from 'ufo'
 import { pathGenerator } from '../../server/lib/pathGenerator'
 import { readJsonFile } from '../../server/lib/readJsonFile'
-import { HyperRoute, bootstrapHyperApp } from '../hyperApp'
-import { runHyperApp } from '../server'
+import { HyperRoute, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
+import { runHyperApp } from '../serve'
 
 const normalizeManifestData = (manifest: { css?: string[] }) => {
   if (manifest.css) {
@@ -16,7 +16,7 @@ const normalizeManifestData = (manifest: { css?: string[] }) => {
 }
 
 export const runHyperProductionServer = async () => {
-  let config = undefined
+  let config = defaultHyperconfig
   const configPath = joinURL(process.cwd(), '.hyper', 'hyper.config.mjs')
   if (existsSync(configPath)) config = (await import(configPath)).default
 

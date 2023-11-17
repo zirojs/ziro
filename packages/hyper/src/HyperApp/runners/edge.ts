@@ -1,8 +1,7 @@
-import { createRouter, eventHandler, setHeaders } from 'h3'
-import { readFileSync } from 'node:fs'
+import { createRouter } from 'h3'
 import { joinURL } from 'ufo'
 import { pathGenerator } from '../../server/lib/pathGenerator'
-import { HyperConfig, HyperRoute, HyperRouteClientBundle, HyperRouteServerBundle, bootstrapHyperApp } from '../hyperApp'
+import { Environment, HyperApp, HyperConfig, HyperRoute, HyperRouteClientBundle, HyperRouteServerBundle } from '../hyperApp'
 
 const normalizeManifestData = (manifest: { css?: string[] }) => {
   if (manifest.css) {
@@ -33,7 +32,11 @@ export const HyperEdgeRunner = async (
     return route
   }
 
-  const app = await bootstrapHyperApp(config as Required<HyperConfig>, routeParser)
+  const app = new HyperApp(Environment.PRODUCTION, [], {
+    isEdge: true,
+  })
+  if (routeParser) app.routeParser = routeParser
+  await app.installPlugins(config!.plugins || [])
 
   const pages: Record<string, string[]> = {}
 
@@ -70,24 +73,24 @@ export const HyperEdgeRunner = async (
   // return file system file
   const router = createRouter()
 
-  router.add(
-    '/_hyper/**',
-    eventHandler(async (event) => {
-      const filePath = event.path.replace('/_hyper', '')
-      const extension = filePath.split('.')[filePath.split('.').length - 1]
+  // router.add(
+  //   '/_hyper/**',
+  //   eventHandler(async (event) => {
+  //     const filePath = event.path.replace('/_hyper', '')
+  //     const extension = filePath.split('.')[filePath.split('.').length - 1]
 
-      const contentTypes = {
-        css: 'text/css',
-        js: 'text/javascript',
-        mjs: 'text/javascript',
-      }
+  //     const contentTypes = {
+  //       css: 'text/css',
+  //       js: 'text/javascript',
+  //       mjs: 'text/javascript',
+  //     }
 
-      setHeaders(event, {
-        'Content-Type': contentTypes[extension as keyof typeof contentTypes],
-      })
-      return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
-    })
-  )
+  //     setHeaders(event, {
+  //       'Content-Type': contentTypes[extension as keyof typeof contentTypes],
+  //     })
+  //     return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+  //   })
+  // )
 
   app.h3.use(router)
 
