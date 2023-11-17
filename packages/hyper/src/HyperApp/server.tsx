@@ -1,6 +1,5 @@
 import { H3Event, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
 import ReactDOMServer from 'react-dom/server'
-import { isDevelopment } from 'std-env'
 import { joinURL } from 'ufo'
 import template from '../assets/index.html'
 import { attachPageAttrs } from './htmlInjector'
@@ -52,19 +51,18 @@ export const hyperRouteHandler = async (route: HyperRuntimeRoute, app: HyperApp,
   render = await renderSSR(route, pageAttrs, event)
 
   const appHtml = await render()
-
   let html = htmlContent.replace(`<!--ssr-outlet-->`, appHtml)
 
-  if (isDevelopment) {
-    pageAttrs.scripts.push({
-      type: 'module',
-      src: joinURL('/_hyper/', route.URL),
-    })
-  } else
-    pageAttrs.scripts.push({
-      type: 'module',
-      src: joinURL('/_hyper/', route.filePath),
-    })
+  // if (isDevelopment) {
+  //   pageAttrs.scripts.push({
+  //     type: 'module',
+  //     src: joinURL('/_hyper/', route.URL),
+  //   })
+  // } else
+  pageAttrs.scripts.push({
+    type: 'module',
+    src: joinURL('/_hyper/', route.filePath),
+  })
 
   if (route.manifestData?.css) {
     route.manifestData?.css.map((href) => {
@@ -111,17 +109,17 @@ export const bootstrapH3Server = (app: HyperApp) => {
 
       if (event.method === 'POST' && serverModule) {
         const action = serverModule.action
-        const data = await readMultipartFormData(event)
+        const multipartFormData = await readMultipartFormData(event)
 
-        if (data && action) {
+        if (multipartFormData && action) {
           try {
             const fields: any = {}
-            const multipartFormData = await readMultipartFormData(event)
             if (multipartFormData)
               for (const field of multipartFormData) {
                 if (field.name && !field.filename) fields[field.name] = field.data.toString()
                 if (field.name && field.filename) fields[field.name] = field
               }
+
             return await action(fields, event)
           } catch (err) {
             return

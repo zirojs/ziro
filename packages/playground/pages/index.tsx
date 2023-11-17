@@ -10,6 +10,7 @@ export const loader = async () => {
 }
 
 export const action = async (fields: any) => {
+  console.log(fields)
   try {
     await prisma.post.create({
       data: {

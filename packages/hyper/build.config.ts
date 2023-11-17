@@ -17,7 +17,7 @@ export default defineBuildConfig([
     ],
     declaration: true,
     rollup: {
-      cjsBridge: true,
+      // cjsBridge: true,
       inlineDependencies: true,
       esbuild: {
         jsx: 'automatic',
@@ -27,7 +27,7 @@ export default defineBuildConfig([
   {
     entries: ['src/server/edge/index.ts'],
     rollup: {
-      cjsBridge: true,
+      // cjsBridge: true,
       inlineDependencies: true,
       esbuild: {
         jsx: 'automatic',
@@ -37,7 +37,7 @@ export default defineBuildConfig([
   {
     entries: ['src/cli/edge/index.ts'],
     rollup: {
-      cjsBridge: true,
+      // cjsBridge: true,
       inlineDependencies: true,
       esbuild: {
         target: 'esnext',
@@ -49,7 +49,7 @@ export default defineBuildConfig([
     entries: ['src/HyperApp/runners/dev.ts', 'src/HyperApp/runners/edge.ts', 'src/HyperApp/hyperApp.ts'],
     declaration: true,
     rollup: {
-      cjsBridge: true,
+      // cjsBridge: true,
       inlineDependencies: true,
       esbuild: {
         target: 'esnext',

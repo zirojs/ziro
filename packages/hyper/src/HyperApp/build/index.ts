@@ -43,7 +43,7 @@ export const hyperBuild = async () => {
     bundle: true,
     entryPoints: [joinURL(process.cwd(), 'hyper.config.js')],
     // outdir: joinURL(process.cwd(), '.hyper/'),
-    outfile: joinURL(process.cwd(), '.hyper/', 'hyper.config.mjs'),
+    outfile: joinURL(process.cwd(), '.hyper/', 'hyper.config.js'),
     minify: true,
     target: 'esnext',
     jsx: 'automatic',

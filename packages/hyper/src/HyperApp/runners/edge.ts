@@ -1,7 +1,9 @@
 import { createRouter } from 'h3'
 import { joinURL } from 'ufo'
-import { pathGenerator } from '../../server/lib/pathGenerator'
+
+import { pathGenerator } from '../../server/edge/pathGenerator'
 import { Environment, HyperApp, HyperConfig, HyperRoute, HyperRouteClientBundle, HyperRouteServerBundle } from '../hyperApp'
+import { bootstrapH3Server } from '../server'
 
 const normalizeManifestData = (manifest: { css?: string[] }) => {
   if (manifest.css) {
@@ -16,26 +18,20 @@ export const HyperEdgeRunner = async (
   config: HyperConfig,
   manifest: Record<string, { file: string; module: any; isEntry: boolean; clientBundle: HyperRouteClientBundle; serverBundle: HyperRouteServerBundle }>
 ) => {
-  const routeParser = async (route: HyperRoute) => {
+  const app = new HyperApp(Environment.PRODUCTION, [], {
+    isEdge: true,
+  })
+
+  app.routeParser = async (route: HyperRoute) => {
     const routeManifestKey: any = Object.keys(manifest).find((key) => key.endsWith(route.filePath) && !key.startsWith('pages/'))
     const routeManifest = manifest[routeManifestKey]
 
-    // route.clientBundle = async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', routeManifest.file))
-    // route.serverBundle = async () => {
-    //   const pathSplit = routeManifest.file.split('/')
-    //   pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
-    //   return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
-    // }
     // @ts-ignore
     route.manifestData = normalizeManifestData(routeManifest)
     route.filePath = routeManifest.file
     return route
   }
 
-  const app = new HyperApp(Environment.PRODUCTION, [], {
-    isEdge: true,
-  })
-  if (routeParser) app.routeParser = routeParser
   await app.installPlugins(config!.plugins || [])
 
   const pages: Record<string, string[]> = {}
@@ -61,12 +57,6 @@ export const HyperEdgeRunner = async (
       manifestData: normalizeManifestData(manifest[`pages/${paths[route]}`]),
       clientBundle: manifest[`pages/${paths[route]}`].clientBundle,
       serverBundle: manifest[`pages/${paths[route]}`].serverBundle,
-      // clientBundle: async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', manifest[`pages/${paths[route]}`].file)),
-      // serverBundle: async () => {
-      //   const pathSplit = manifest[`pages/${paths[route]}`].file.split('/')
-      //   pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
-      //   return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
-      // },
     })
   })
 
@@ -97,6 +87,8 @@ export const HyperEdgeRunner = async (
   app.transformHTML = async (template, event) => {
     return template
   }
+
+  bootstrapH3Server(app)
 
   return app.h3
 }

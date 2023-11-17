@@ -2,24 +2,23 @@ import { transformSync as babelTranform } from '@babel/core'
 import chalk from 'chalk'
 import { Plugin, build } from 'esbuild'
 import { polyfillNode } from 'esbuild-plugin-polyfill-node'
-import { readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { joinURL } from 'ufo'
 import { readJsonFile } from '../../../../server/lib/readJsonFile'
 import { EdgeProvider } from './interface'
 
-let workerCode = `import { toWebHandler } from 'h3'
+let workerCode = `
 import { HyperEdgeRunner } from 'hyper/src/HyperApp/runners/edge'
 import { joinURL } from 'ufo'
+import {toWebHandler} from 'h3'
 
-const config = await import('./hyper.config.mjs')
+const config = await import('./hyper.config.js')
 --manifest
-
-console.log(manifest)
 
 const webHandler = toWebHandler(await HyperEdgeRunner(config, manifest))
 
 export default {
-  async fetch(request /*: any, env: any, ctx: any*/) {
+  async fetch(request, env: any, ctx: any) {
     const thisUrl = new URL(request.url)
     const pathName = thisUrl.pathname
     if (pathName.startsWith('/_hyper/')) {
@@ -41,8 +40,8 @@ let htmlLoaderPlugin: Plugin = {
     build.onLoad({ filter: /\.html/ }, async (args) => {
       let text = await readFileSync(args.path, 'utf8')
       return {
-        contents: JSON.stringify(text.split(/\s+/)),
-        loader: 'json',
+        contents: text,
+        loader: 'text',
       }
     })
   },
@@ -95,8 +94,6 @@ export class Cloudflare implements EdgeProvider {
 		${parsedStrings}`
     )
 
-    console.log(workerCode)
-
     const transformedCode = babelTranform(workerCode, {
       presets: ['@babel/preset-typescript'],
       filename: '_worker.ts',
@@ -113,7 +110,7 @@ export class Cloudflare implements EdgeProvider {
         plugins: [polyfillNode(), htmlLoaderPlugin],
       })
 
-      unlinkSync(tmpWorker)
+      // unlinkSync(tmpWorker)
       // rmSync(serverBundlesDir, { recursive: true, force: true })
       console.log(chalk.green('✓') + chalk.yellow(' Worker bundle generated'))
     }

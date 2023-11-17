@@ -7,6 +7,7 @@ import { runHyperDevServer } from '../src/HyperApp/runners/dev'
 import { runHyperProductionServer } from '../src/HyperApp/runners/production'
 import { edgeProviders } from '../src/cli/edge'
 const program = new Command()
+
 program.name(name).description('React SSR Framework').version(version)
 
 program
