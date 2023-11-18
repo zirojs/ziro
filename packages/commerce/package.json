@@ -1,6 +1,6 @@
 {
   "name": "@hyper-insights/hypress",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "e-commerce tool built on top of @hyper-inssights/hyper",
   "type": "module",
   "scripts": {
