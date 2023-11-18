@@ -1,6 +1,6 @@
 {
   "name": "@hypress/hyper",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a ssr framework for react",
   "files": [
     "dist",
