@@ -1,6 +1,6 @@
 {
   "name": "@hyper-insights/hyper",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "a ssr framework for react",
   "files": [
     "dist",
