@@ -1,5 +1,5 @@
 {
-  "name": "@hypress/hyper",
+  "name": "@narixius/hyper",
   "version": "0.0.3",
   "description": "a ssr framework for react",
   "files": [
