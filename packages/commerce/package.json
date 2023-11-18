@@ -1,7 +1,7 @@
 {
   "name": "@hyper-insights/hypress",
   "version": "0.0.1",
-  "description": "a ssr framework for react",
+  "description": "e-commerce tool built on top of @hyper-inssights/hyper",
   "type": "module",
   "scripts": {
     "dev": "watch 'yarn build' ./src ./bin",
