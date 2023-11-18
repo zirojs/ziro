@@ -1,6 +1,6 @@
 {
   "name": "hyper-playground",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "hyper playground",
   "license": "MIT",
   "private": true,
@@ -16,7 +16,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.2",
     "autoprefixer": "^10.4.15",
-    "hyper": "^0.0.1",
+    "hyper": "^0.0.2",
     "netlify-cli": "^16.4.2",
     "nodemon": "^3.0.1",
     "postcss": "^8.4.29",
