@@ -1,7 +1,7 @@
 import { App, createApp, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
 import { createRouter } from 'radix3'
-import { RouteData } from '../lib/RouterObj'
-import { PageAttrs, attachPageAttrs } from '../lib/htmlInjector'
+import { RouteData } from '../../lib/RouterObj'
+import { PageAttrs, attachPageAttrs } from '../../lib/htmlInjector'
 import { loadPageModules, pageSSRRenderer } from './pageRenderer'
 import { pathGenerator } from './pathGenerator'
 

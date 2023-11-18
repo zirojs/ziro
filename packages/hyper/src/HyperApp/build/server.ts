@@ -3,11 +3,11 @@ import { glob } from 'glob'
 import { joinURL } from 'ufo'
 import { build } from 'vite'
 import { defaultBuildConfig } from '.'
-import { extend } from '../../utils/extendObject'
-import { generateBuildDirectoryFromFilename, isHyperPage } from '../../utils/hyperPages'
-import { hyperBabelClientBundle } from '../babel-plugins/client-bundle'
-import { hyperBabelServerBundle } from '../babel-plugins/server-bundle'
 import { HyperApp } from '../hyperApp'
+import { extend } from '../utils/extendObject'
+import { generateBuildDirectoryFromFilename, isHyperPage } from '../utils/hyperPages'
+import { hyperBabelClientBundle } from './babel-plugins/client-bundle'
+import { hyperBabelServerBundle } from './babel-plugins/server-bundle'
 
 const minify = true
 

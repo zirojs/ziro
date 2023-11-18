@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "hyper playground",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "dev": "nodemon -w ../hyper/dist --exec 'yarn hyper:dev'",
     "hyper:dev": "hyper dev",

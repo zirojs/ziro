@@ -5,12 +5,10 @@ import '../style.css'
 
 export const loader = async () => {
   const posts = await prisma.post.findMany()
-  prisma.$disconnect()
   return { message: 'hello world', posts }
 }
 
 export const action = async (fields: any) => {
-  console.log(fields)
   try {
     await prisma.post.create({
       data: {
@@ -18,7 +16,6 @@ export const action = async (fields: any) => {
         content: fields.content,
       },
     })
-    prisma.$disconnect()
   } catch (err) {
     console.log(err)
   }

@@ -2,10 +2,10 @@
 import { Command, Option } from 'commander'
 import { name, version } from '../package.json' assert { type: 'json' }
 import { hyperBuild } from '../src/HyperApp/build'
-import { generateEdgeBundle } from '../src/HyperApp/build/edge'
+import { edgeProviders, generateEdgeBundle } from '../src/HyperApp/build/edge'
 import { runHyperDevServer } from '../src/HyperApp/runners/dev'
 import { runHyperProductionServer } from '../src/HyperApp/runners/production'
-import { edgeProviders } from '../src/cli/edge'
+
 const program = new Command()
 
 program.name(name).description('React SSR Framework').version(version)

@@ -1,11 +1,11 @@
-import chalk from "chalk"
-import { toNodeListener } from "h3"
-import { listen } from "listhen"
-import { isDevelopment } from "std-env"
-import { HyperApp } from "./hyperApp"
-import { bootstrapH3Server } from "./server"
+import chalk from 'chalk'
+import { toNodeListener } from 'h3'
+import { listen } from 'listhen'
+import { isDevelopment } from 'std-env'
+import { HyperApp } from '../../hyperApp'
+import { bootstrapH3Server } from '../../server'
 
-export const runHyperApp = async (app: HyperApp) => {
+export const serveLocal = async (app: HyperApp) => {
   await bootstrapH3Server(app)
   const listener = await listen(toNodeListener(app.h3), { port: 3000, showURL: false, hostname: '0.0.0.0' })
   isDevelopment && console.clear()

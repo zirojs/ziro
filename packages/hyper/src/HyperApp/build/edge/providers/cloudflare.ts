@@ -4,7 +4,7 @@ import { Plugin, build } from 'esbuild'
 import { polyfillNode } from 'esbuild-plugin-polyfill-node'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { joinURL } from 'ufo'
-import { readJsonFile } from '../../../../server/lib/readJsonFile'
+import { readJsonFile } from '../../../lib/readJsonFile'
 import { EdgeProvider } from './interface'
 
 let workerCode = `

@@ -1,10 +1,10 @@
 import { createRouter, eventHandler, setHeaders } from 'h3'
 import { existsSync, readFileSync } from 'node:fs'
 import { joinURL } from 'ufo'
-import { pathGenerator } from '../../server/lib/pathGenerator'
-import { readJsonFile } from '../../server/lib/readJsonFile'
 import { HyperRoute, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
-import { runHyperApp } from '../serve'
+import { pathGenerator } from '../lib/pathGenerator'
+import { readJsonFile } from '../lib/readJsonFile'
+import { serveLocal } from './utils/serveLocal'
 
 const normalizeManifestData = (manifest: { css?: string[] }) => {
   if (manifest.css) {
@@ -98,5 +98,5 @@ export const runHyperProductionServer = async () => {
     return template
   }
 
-  runHyperApp(app)
+  serveLocal(app)
 }

@@ -1,11 +1,9 @@
 import { defaultContentType, eventHandler, getValidatedQuery } from 'h3'
 import { RadixRouter } from 'radix3'
 import ReactDOMServer from 'react-dom/server'
-import { joinURL } from 'ufo'
 import { ViteDevServer } from 'vite'
-import { RouteData } from '../lib/RouterObj'
-import { DEV_ENV } from '../lib/constants'
-import { PageAttrs } from '../lib/htmlInjector'
+import { RouteData } from '../../lib/RouterObj'
+import { PageAttrs } from '../../lib/htmlInjector'
 
 export const hyperLoaderDataVariableName = 'hyperLoaderData'
 
@@ -17,7 +15,7 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
     vite.ws.send({
       type: 'error',
       err: {
-        message: `There is no 'page' function in the '${filePath.replaceAll(process.cwd() + '/', '')}'`,
+        message: `There is no 'page' function in the '${filePath}'`,
         stack: '',
       },
     })
@@ -77,24 +75,15 @@ export const pageJsBundleHandler = (vite: ViteDevServer, router: RadixRouter<Rou
   })
 }
 
-export const loadPageModules = async (filePath: string, vite: ViteDevServer | null) => {
-  if (process.env.NODE_ENV === DEV_ENV && vite !== null) {
-    const module = await vite.ssrLoadModule(filePath)
-    return [module, module]
-  } else {
-    const client = await import(/* @vite-ignore */ joinURL(process.cwd(), '.hyper', 'server-bundles', filePath))
-    const serverPage = filePath.split('/')
-    serverPage[serverPage.length - 1] = 'server.' + serverPage[serverPage.length - 1]
-    const server = await import(/* @vite-ignore */ joinURL(process.cwd(), '.hyper', 'server-bundles', serverPage.join('/')))
-    return [client, server]
-  }
+export const loadPageModules = async (file: RouteData) => {
+  return [file.manifestData!.clientModule, file.manifestData!.serverModule]
 }
 
-export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: string, pageAttrs: PageAttrs) => {
-  let [clientModule, serverModule] = await loadPageModules(filePath, vite)
+export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => {
+  let [clientBundle, serverBundle] = await loadPageModules(file)
 
   let loaderData = {}
-  const loader = serverModule.loader
+  const loader = serverBundle.loader
   if (typeof loader === 'function' && loader) {
     loaderData = await loader()
     pageAttrs.scripts.push({
@@ -102,7 +91,7 @@ export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: stri
     })
   }
 
-  const meta = serverModule.meta
+  const meta = serverBundle.meta
   if (typeof meta === 'function' && meta) {
     pageAttrs.meta = meta({
       loaderData,
@@ -110,10 +99,10 @@ export const pageSSRRenderer = async (vite: ViteDevServer | null, filePath: stri
   }
 
   return async () => {
-    if (!clientModule.page) {
+    if (!clientBundle.page) {
       return ''
     }
-    const Page = clientModule.page
+    const Page = clientBundle.page
     return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }

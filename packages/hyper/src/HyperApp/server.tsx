@@ -2,8 +2,8 @@ import { H3Event, eventHandler, getRequestURL, getValidatedQuery, readMultipartF
 import ReactDOMServer from 'react-dom/server'
 import { joinURL } from 'ufo'
 import template from '../assets/index.html'
-import { attachPageAttrs } from './htmlInjector'
 import { HyperApp, HyperRuntimeRoute } from './hyperApp'
+import { attachPageAttrs } from './lib/htmlInjector'
 
 export type PageAttrs = {
   scripts: Record<string, any>[]

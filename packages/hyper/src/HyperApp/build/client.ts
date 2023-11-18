@@ -3,10 +3,10 @@ import { glob } from 'glob'
 import { joinURL } from 'ufo'
 import { build } from 'vite'
 import { defaultBuildConfig } from '.'
-import { extend } from '../../utils/extendObject'
-import { generateBuildDirectoryFromFilename, isHyperPage } from '../../utils/hyperPages'
-import { hyperBabelClientBundle } from '../babel-plugins/client-bundle'
 import { HyperApp } from '../hyperApp'
+import { extend } from '../utils/extendObject'
+import { generateBuildDirectoryFromFilename, isHyperPage } from '../utils/hyperPages'
+import { hyperBabelClientBundle } from './babel-plugins/client-bundle'
 
 export const buildClientHydration = async (app: HyperApp) => {
   const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath)

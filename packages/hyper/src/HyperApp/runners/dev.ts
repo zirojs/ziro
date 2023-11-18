@@ -6,9 +6,9 @@ import { dirname } from 'path'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
 import { ViteDevServer, createServer as createViteServer } from 'vite'
-import { pathGenerator } from '../../server/lib/pathGenerator'
 import { HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
-import { runHyperApp } from '../serve'
+import { pathGenerator } from '../lib/pathGenerator'
+import { serveLocal } from './utils/serveLocal'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -81,7 +81,7 @@ export const runHyperDevServer = async () => {
   app.transformHTML = async (template, event) => {
     return vite.transformIndexHtml(event.path, template)
   }
-  runHyperApp(app)
+  serveLocal(app)
 }
 
 const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {
