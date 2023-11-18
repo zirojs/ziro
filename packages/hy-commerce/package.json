@@ -1,6 +1,7 @@
 {
   "name": "hy-commerce",
   "version": "0.0.1",
+  "private": true,
   "description": "a ssr framework for react",
   "files": [
     "dist"
