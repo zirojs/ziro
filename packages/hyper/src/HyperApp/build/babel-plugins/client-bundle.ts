@@ -16,7 +16,7 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
     Program: (path: NodePath<types.Program>) => {
       // import ReactDOM
       path.unshiftContainer('body', t.importDeclaration([t.importDefaultSpecifier(t.identifier('ReactDOM'))], t.stringLiteral('react-dom/client')))
-      path.unshiftContainer('body', t.importDeclaration([t.importSpecifier(t.identifier('PageProvider'), t.identifier('PageProvider'))], t.stringLiteral('hyper/page')))
+      path.unshiftContainer('body', t.importDeclaration([t.importSpecifier(t.identifier('PageProvider'), t.identifier('PageProvider'))], t.stringLiteral('@hyper-insights/hyper/page')))
 
       const isWindowDefined = t.binaryExpression('!==', t.unaryExpression('typeof', t.identifier('window')), t.stringLiteral('undefined'))
       const ifStatement = t.ifStatement(

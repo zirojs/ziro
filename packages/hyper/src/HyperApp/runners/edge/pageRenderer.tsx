@@ -31,7 +31,7 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
           : `
 			// imp RouterContext from 'hyper/router-context'
 			imp ReactDOM from 'react-dom/client';
-      imp {PageProvider} from 'hyper/page'
+      imp {PageProvider} from '@hyper-insights/hyper/page'
 
 			window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
 			// <RouterContext>{

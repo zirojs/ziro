@@ -1,5 +1,5 @@
-import Link from 'hyper/link'
-import { HyperPage, useAction, usePageLoader } from 'hyper/page'
+import Link from '@hyper-insights/hyper/link'
+import { HyperPage, useAction, usePageLoader } from '@hyper-insights/hyper/page'
 import { prisma } from '../prisma'
 import '../style.css'
 

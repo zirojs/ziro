@@ -1,4 +1,4 @@
-import { HyperPage } from 'hyper/page'
+import { HyperPage } from '@hyper-insights/hyper/page'
 // import './custom.css'
 
 // import { PageProvider } from 'hyper/page'

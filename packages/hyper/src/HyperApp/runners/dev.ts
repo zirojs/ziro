@@ -90,7 +90,7 @@ const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {
       `
 ${genImport(filePath, [{ name: 'page', as: 'Page' }, 'loader'])}
 ${genImport('react-dom/client', 'ReactDOM')}
-${genImport('hyper/page', ['PageProvider'])}
+${genImport('@hyper-insights/hyper/page', ['PageProvider'])}
 
 window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
 	<PageProvider>
