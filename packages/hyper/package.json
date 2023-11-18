@@ -1,5 +1,5 @@
 {
-  "name": "hyper",
+  "name": "@hypress/hyper",
   "version": "0.0.2",
   "description": "a ssr framework for react",
   "files": [
@@ -64,5 +64,6 @@
     "copyfiles": "^2.4.1",
     "typescript": "^5.1.6",
     "unbuild": "^2.0.0"
-  }
+  },
+  "gitHead": "e90148eb94af38ebc7def69bcf9dd1fb63a05422"
 }
