@@ -6,8 +6,8 @@ export default defineBuildConfig([
       'src/client/Link/index.tsx',
       'src/client/RouterContext/index.tsx',
       'src/client/PageContext/index.tsx',
-      'src/HyperApp/runners/edge.ts',
-      'src/HyperApp/hyperApp.ts',
+			'src/HyperApp/runners/edge.ts',
+			'src/HyperApp/hyperApp.ts',
       {
         builder: 'mkdist',
         input: 'src/assets',

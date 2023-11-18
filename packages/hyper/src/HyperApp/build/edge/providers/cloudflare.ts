@@ -8,7 +8,7 @@ import { readJsonFile } from '../../../lib/readJsonFile'
 import { EdgeProvider } from './interface'
 
 let workerCode = `
-import { HyperEdgeRunner } from '@hyper-insights/hyper/HyperApp/runners/edge'
+import { HyperEdgeRunner } from '@hyper-insights/hyper/edge'
 import { joinURL } from 'ufo'
 import {toWebHandler} from 'h3'
 
@@ -108,6 +108,7 @@ export class Cloudflare implements EdgeProvider {
         format: 'esm',
         outfile: joinURL(process.cwd(), '.hyper', '_worker.js'),
         plugins: [polyfillNode(), htmlLoaderPlugin],
+        logLevel: 'error',
       })
 
       // unlinkSync(tmpWorker)

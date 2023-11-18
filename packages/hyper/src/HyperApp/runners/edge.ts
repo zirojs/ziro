@@ -1,6 +1,5 @@
 import { createRouter } from 'h3'
 import { joinURL } from 'ufo'
-
 import { Environment, HyperApp, HyperConfig, HyperRoute, HyperRouteClientBundle, HyperRouteServerBundle } from '../hyperApp'
 import { bootstrapH3Server } from '../server'
 import { pathGenerator } from './edge/pathGenerator'

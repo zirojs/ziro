@@ -4,7 +4,10 @@
   "description": "a ssr framework for react",
   "files": [
     "dist",
+    "edge.js",
+    "edge.d.ts",
     "link.js",
+    "link.d.ts",
     "page.js",
     "page.d.ts"
   ],
