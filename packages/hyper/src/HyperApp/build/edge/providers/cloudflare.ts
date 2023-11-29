@@ -2,17 +2,17 @@ import { transformSync as babelTranform } from '@babel/core'
 import chalk from 'chalk'
 import { Plugin, build } from 'esbuild'
 import { polyfillNode } from 'esbuild-plugin-polyfill-node'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { joinURL } from 'ufo'
+import { defaultHyperconfig } from '../../../hyperApp'
 import { readJsonFile } from '../../../lib/readJsonFile'
 import { EdgeProvider } from './interface'
-
 let workerCode = `
 import { HyperEdgeRunner } from '@hyper-insights/hyper/edge'
 import { joinURL } from 'ufo'
 import {toWebHandler} from 'h3'
 
-const config = await import('./hyper.config.js')
+--config
 --manifest
 
 const webHandler = toWebHandler(await HyperEdgeRunner(config, manifest))
@@ -61,6 +61,13 @@ export class Cloudflare implements EdgeProvider {
   }
   async generate() {
     console.log(chalk.yellow('Generating worker bundle...'))
+    // const config = await import('./hyper.config.js')
+    if (existsSync(joinURL(process.cwd(), '.hyper', 'hyper.config.js'))) {
+      workerCode = workerCode.replace('--config', "const config = await import('./hyper.config.js')")
+    } else {
+      workerCode = workerCode.replace('--config', `const config = ${JSON.stringify(defaultHyperconfig)}`)
+    }
+
     const manifest = readJsonFile(joinURL(this.serverBundlesDir, 'manifest.json'))
 
     let parsedStrings = ''
@@ -75,17 +82,6 @@ export class Cloudflare implements EdgeProvider {
 				`
       }
     })
-    // const routes = readJsonFile(joinURL(this.serverBundlesDir, 'manifest.json'))
-    // const importManifest = `const routes: Record<string, { file: string; module: any }> = await import(${JSON.stringify(joinURL(process.cwd(), '.hyper', 'server-bundles', 'manifest.json'))})`
-    // let importPageModules = ``
-    // Object.keys(routes).forEach((key: string) => {
-    //   if (isHyperPage(routes[key].file)) {
-    //     importPageModules += `routes["${key}"].clientModule = await import(${JSON.stringify(joinURL(process.cwd(), '.hyper', 'server-bundles', routes[key].file))});\n`
-    //     const serverPage = routes[key].file.split('/')
-    //     serverPage[serverPage.length - 1] = 'server.' + serverPage[serverPage.length - 1]
-    //     importPageModules += `routes["${key}"].serverModule = await import(${JSON.stringify(joinURL(process.cwd(), '.hyper', 'server-bundles', serverPage.join('/')))});\n`
-    //   }
-    // })
 
     workerCode = workerCode.replace(
       '--manifest',
@@ -111,7 +107,7 @@ export class Cloudflare implements EdgeProvider {
         logLevel: 'error',
       })
 
-      // unlinkSync(tmpWorker)
+      unlinkSync(tmpWorker)
       // rmSync(serverBundlesDir, { recursive: true, force: true })
       console.log(chalk.green('✓') + chalk.yellow(' Worker bundle generated'))
     }

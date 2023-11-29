@@ -6,7 +6,7 @@ import { dirname } from 'path'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
 import { ViteDevServer, createServer as createViteServer } from 'vite'
-import { HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
+import { HyperConfig, HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
 import { pathGenerator } from '../lib/pathGenerator'
 import { serveLocal } from './utils/serveLocal'
 
@@ -40,7 +40,7 @@ export const runHyperDevServer = async () => {
   }
 
   let config = defaultHyperconfig
-  if (existsSync(joinURL(process.cwd(), 'hyper.config.js'))) config = await import(joinURL(process.cwd(), 'hyper.config.js'))
+  if (existsSync(joinURL(process.cwd(), 'hyper.config.js'))) config = (await vite.ssrLoadModule(joinURL(process.cwd(), 'hyper.config.js'))).default as Required<HyperConfig>
 
   const app = await bootstrapHyperApp(config, routeParser)
 

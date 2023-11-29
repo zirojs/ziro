@@ -1,12 +1,12 @@
 import { loadConfig } from 'c12'
 import { build } from 'esbuild'
 import { polyfillNode } from 'esbuild-plugin-polyfill-node'
+import { existsSync } from 'node:fs'
 import { joinURL } from 'ufo'
 import { InlineConfig } from 'vite'
 import { Environment, HyperApp, HyperConfig, defaultHyperconfig } from '../hyperApp'
 import { buildClientHydration } from './client'
 import { buildServerBundles } from './server'
-
 export const defaultBuildConfig: InlineConfig = {
   root: process.cwd(),
   define: {
@@ -37,17 +37,18 @@ export const hyperBuild = async () => {
 
   await buildClientHydration(app)
   await buildServerBundles(app)
+  const configPath = joinURL(process.cwd(), 'hyper.config.js')
+  const configOutFile = joinURL(process.cwd(), '.hyper/', 'hyper.config.js')
 
-  // build config file
-  await build({
-    bundle: true,
-    entryPoints: [joinURL(process.cwd(), 'hyper.config.js')],
-    // outdir: joinURL(process.cwd(), '.hyper/'),
-    outfile: joinURL(process.cwd(), '.hyper/', 'hyper.config.js'),
-    minify: true,
-    target: 'esnext',
-    jsx: 'automatic',
-    platform: 'neutral',
-    plugins: [polyfillNode()],
-  })
+  if (existsSync(configPath))
+    await build({
+      bundle: true,
+      entryPoints: [configPath],
+      outfile: configOutFile,
+      minify: true,
+      target: 'esnext',
+      jsx: 'automatic',
+      platform: 'neutral',
+      plugins: [polyfillNode()],
+    })
 }
