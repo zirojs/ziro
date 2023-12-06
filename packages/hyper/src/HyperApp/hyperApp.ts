@@ -49,7 +49,7 @@ export type HyperRoute =
       URL: string
       clientBundle: HyperRouteClientBundle
       serverBundle: HyperRouteServerBundle
-      filePath: string
+      filePath?: string
       manifestData?: {
         clientModule?: any
         serverModule?: any
@@ -83,7 +83,7 @@ export class HyperApp {
   public middlewares: HyperMiddleware[] = []
   public routes: RadixRouter<HyperRuntimeRoute>
   public h3: H3App = createApp()
-  private thirdPartyRoutes: Router = createH3Router()
+  public thirdPartyRoutes: Router = createH3Router()
   public thirdPartyRoutesArray: HyperRoute[] = []
   constructor(public readonly environment: Environment, public readonly defaultRoutes: HyperRuntimeRoute[], public readonly options: HyperAppOptions = defaultHyperAppOptions) {
     this.routes = createRouter()
@@ -94,6 +94,7 @@ export class HyperApp {
     route.isFileBased = false
     await this.routeParser(route)
     this.thirdPartyRoutesArray.push(route)
+    console.log('third party route added', route.URL)
     this.thirdPartyRoutes.add(
       route.URL,
       eventHandler(async (event) => await hyperRouteHandler(route as HyperRuntimeRoute, this, event))

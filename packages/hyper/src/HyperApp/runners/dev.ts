@@ -32,9 +32,12 @@ export const runHyperDevServer = async () => {
   })
 
   const routeParser = async (route: HyperRoute) => {
-    if (!route.serverBundle || !route.clientBundle) {
-      route.clientBundle = async () => (await vite.ssrLoadModule(route.filePath)) as HyperRouteClientProps
-      route.serverBundle = async () => (await vite.ssrLoadModule(route.filePath)) as HyperRouteServerProps
+    if (!route.serverBundle && route.filePath) {
+      route.serverBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as HyperRouteServerProps
+    }
+
+    if (!route.clientBundle && route.filePath) {
+      route.clientBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as HyperRouteClientProps
     }
     return route
   }

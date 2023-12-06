@@ -23,18 +23,20 @@ export const runHyperProductionServer = async () => {
   const data = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', 'manifest.json'))
 
   const routeParser = async (route: HyperRoute) => {
-    const routeManifestKey: any = Object.keys(data).find((key) => key.endsWith(route.filePath) && !key.startsWith('pages/'))
-    const routeManifest = data[routeManifestKey]
+    if (route.filePath) {
+      const routeManifestKey: any = Object.keys(data).find((key) => key.endsWith(route.filePath!) && !key.startsWith('pages/'))
+      const routeManifest = data[routeManifestKey]
 
-    route.clientBundle = async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', routeManifest.file))
-    route.serverBundle = async () => {
-      const pathSplit = routeManifest.file.split('/')
-      pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
-      return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
+      route.clientBundle = async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', routeManifest.file))
+      route.serverBundle = async () => {
+        const pathSplit = routeManifest.file.split('/')
+        pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
+        return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
+      }
+      // @ts-ignore
+      route.manifestData = normalizeManifestData(routeManifest)
+      route.filePath = routeManifest.file
     }
-    // @ts-ignore
-    route.manifestData = normalizeManifestData(routeManifest)
-    route.filePath = routeManifest.file
     return route
   }
 

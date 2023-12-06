@@ -22,12 +22,14 @@ export const HyperEdgeRunner = async (
   })
 
   app.routeParser = async (route: HyperRoute) => {
-    const routeManifestKey: any = Object.keys(manifest).find((key) => key.endsWith(route.filePath) && !key.startsWith('pages/'))
-    const routeManifest = manifest[routeManifestKey]
+    if (route.filePath) {
+      const routeManifestKey: any = Object.keys(manifest).find((key) => key.endsWith(route.filePath!) && !key.startsWith('pages/'))
+      const routeManifest = manifest[routeManifestKey]
 
-    // @ts-ignore
-    route.manifestData = normalizeManifestData(routeManifest)
-    route.filePath = routeManifest.file
+      // @ts-ignore
+      route.manifestData = normalizeManifestData(routeManifest)
+      route.filePath = routeManifest.file
+    }
     return route
   }
 

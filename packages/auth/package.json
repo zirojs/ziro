@@ -1,0 +1,28 @@
+{
+  "name": "@hyper-insights/auth",
+  "version": "0.0.9",
+  "description": "",
+  "private": true,
+  "main": "./index.ts",
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "@hyper-insights/hyper": "^0.0.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "author": "Nariman Movaffaghi",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "h3": "^1.9.0",
+    "typescript": "^5.3.2"
+  }
+}

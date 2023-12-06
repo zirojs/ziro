@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1701870520216,
+      "tag": "0000_boring_roulette",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1701873615251,
+      "tag": "0001_messy_ezekiel_stane",
+      "breakpoints": true
+    }
+  ]
+}

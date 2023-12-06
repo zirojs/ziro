@@ -13,9 +13,10 @@
 		"jsx": "react-jsx",
 		"declaration": true,
 		"noEmit": true,
-		"allowImportingTsExtensions": true,
-		"types": [
-			"vite/client"
-		]
-	}
+		"allowImportingTsExtensions": true
+	},
+	"include": [
+		"./**/*.tsx",
+		"./**/*.ts"
+	]
 }

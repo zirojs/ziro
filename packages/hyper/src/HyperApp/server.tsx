@@ -53,16 +53,11 @@ export const hyperRouteHandler = async (route: HyperRuntimeRoute, app: HyperApp,
   const appHtml = await render()
   let html = htmlContent.replace(`<!--ssr-outlet-->`, appHtml)
 
-  // if (isDevelopment) {
-  //   pageAttrs.scripts.push({
-  //     type: 'module',
-  //     src: joinURL('/_hyper/', route.URL),
-  //   })
-  // } else
-  pageAttrs.scripts.push({
-    type: 'module',
-    src: joinURL('/_hyper/', route.filePath),
-  })
+  if (route.filePath)
+    pageAttrs.scripts.push({
+      type: 'module',
+      src: joinURL('/_hyper/', route.filePath),
+    })
 
   if (route.manifestData?.css) {
     route.manifestData?.css.map((href) => {
@@ -96,14 +91,20 @@ export const bootstrapH3Server = (app: HyperApp) => {
         const page = (data as { page: string }).page
 
         return new Promise((resolve, reject) => {
-          if (page && app.routes.lookup(page)) resolve({ page })
+          if (page && (app.routes.lookup(page) || app.thirdPartyRoutesArray.find((route) => route.URL === page))) resolve({ page })
           else {
             reject('page path is not valid!')
           }
         })
       })
-
-      const pageInfo = app.routes.lookup(page)
+      console.log('lookup page', page)
+      let pageInfo = app.routes.lookup(page)
+      if (!pageInfo) {
+        const matchedRoute = app.thirdPartyRoutesArray.find((route) => route.URL === page)
+        if (matchedRoute) {
+          pageInfo = matchedRoute! as HyperRuntimeRoute
+        }
+      }
 
       const serverModule = await pageInfo?.serverBundle()
 

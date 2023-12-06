@@ -11,23 +11,28 @@
     "hyper:build": "hyper build",
     "preview": "hyper preview",
     "cloudflare:dev": "wrangler pages dev ./.hyper --compatibility-date=2023-09-22",
-    "cloudflare:deploy": "wrangler pages deploy ./.hyper"
+    "cloudflare:deploy": "wrangler pages deploy ./.hyper",
+    "db:gen:migrate": "drizzle-kit generate:pg",
+    "db:migrate": "tsx ./drizzle/migrate.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
     "@hyper-insights/hyper": "^0.0.9",
+    "@types/ws": "^8.5.10",
     "autoprefixer": "^10.4.15",
-    "netlify-cli": "^16.4.2",
+    "dotenv": "^16.3.1",
+    "drizzle-kit": "^0.20.6",
     "nodemon": "^3.0.1",
     "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3",
     "wrangler": "^3.10.1"
   },
   "dependencies": {
-    "@babel/core": "^7.23.2",
+    "@hyper-insights/auth": "^0.0.9",
     "@hyper-insights/custom-plugin": "^0.0.9",
-    "@prisma/client": "^5.4.1",
-    "@prisma/extension-accelerate": "^0.6.2",
+    "@neondatabase/serverless": "^0.6.0",
+    "drizzle-orm": "^0.29.1",
+    "pg": "^8.11.3",
     "prisma": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

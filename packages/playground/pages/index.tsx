@@ -1,20 +1,18 @@
 import Link from '@hyper-insights/hyper/link'
 import { HyperPage, useAction, usePageLoader } from '@hyper-insights/hyper/page'
-import { prisma } from '../prisma'
-import '../style.css'
+import { posts as PostModal, db } from '../drizzle'
+import './style.css'
 
 export const loader = async () => {
-  const posts = await prisma.post.findMany()
+  const posts = await db.select().from(PostModal)
   return { message: 'hello world', posts }
 }
 
 export const action = async (fields: any) => {
   try {
-    await prisma.post.create({
-      data: {
-        title: fields.title,
-        content: fields.content,
-      },
+    await db.insert(PostModal).values({
+      title: fields.title,
+      content: fields.title,
     })
   } catch (err) {
     console.log(err)
