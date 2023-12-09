@@ -1,6 +1,6 @@
 {
   "name": "@hyper-insights/hyper",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "a ssr framework for react",
   "main": "./dist/HyperApp/hyperApp.mjs",
   "module": "./dist/HyperApp/hyperApp.mjs",

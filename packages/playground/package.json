@@ -1,6 +1,6 @@
 {
   "name": "hyper-playground",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "hyper playground",
   "license": "MIT",
   "private": true,
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
-    "@hyper-insights/hyper": "^0.0.9",
+    "@hyper-insights/hyper": "^0.0.10",
     "@types/ws": "^8.5.10",
     "autoprefixer": "^10.4.15",
     "dotenv": "^16.3.1",
@@ -28,8 +28,8 @@
     "wrangler": "^3.10.1"
   },
   "dependencies": {
-    "@hyper-insights/auth": "^0.0.9",
-    "@hyper-insights/custom-plugin": "^0.0.9",
+    "@hyper-insights/auth": "^0.0.10",
+    "@hyper-insights/custom-plugin": "^0.0.10",
     "@neondatabase/serverless": "^0.6.0",
     "drizzle-orm": "^0.29.1",
     "pg": "^8.11.3",
