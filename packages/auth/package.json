@@ -2,7 +2,7 @@
   "name": "@hyper-insights/auth",
   "version": "0.0.9",
   "description": "",
-  "private": true,
+  "private": false,
   "main": "./dist/index.mjs",
   "type": "module",
   "scripts": {
