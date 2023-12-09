@@ -12,7 +12,7 @@ import { hyperBabelServerBundle } from './babel-plugins/server-bundle'
 const minify = true
 
 export const buildServerBundles = async (app: HyperApp) => {
-  const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath)
+  const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath).filter((d) => !!d) as []
 
   await build(
     extend(defaultBuildConfig, {

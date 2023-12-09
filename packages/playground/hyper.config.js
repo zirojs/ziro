@@ -1,8 +1,14 @@
-// import auth from '@hyper-insights/auth'
-// import customPlugin from '@hyper-insights/custom-plugin'
+import auth from '@hyper-insights/auth'
 
 export default {
   edge: false,
-  plugins: [],
-  // plugins: [customPlugin, auth],
+  plugins: [
+    auth({
+      secredKey: 'zH4NRP1HMALxxCFnRZABFA7GOJtzU_gIj02alfL1lvI',
+      authenticate(username, password) {
+        console.log(username, password)
+        if (username === 'admin' && password === 'admin') return { username }
+      },
+    }),
+  ],
 }

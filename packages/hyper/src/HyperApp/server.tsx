@@ -1,9 +1,10 @@
-import { H3Event, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
+import { H3Event, eventHandler, getRequestURL, getValidatedQuery } from 'h3'
 import ReactDOMServer from 'react-dom/server'
 import { joinURL } from 'ufo'
 import template from '../assets/index.html'
 import { HyperApp, HyperRuntimeRoute } from './hyperApp'
 import { attachPageAttrs } from './lib/htmlInjector'
+import { parseBody } from './utils/parseBody'
 
 export type PageAttrs = {
   scripts: Record<string, any>[]
@@ -97,7 +98,6 @@ export const bootstrapH3Server = (app: HyperApp) => {
           }
         })
       })
-      console.log('lookup page', page)
       let pageInfo = app.routes.lookup(page)
       if (!pageInfo) {
         const matchedRoute = app.thirdPartyRoutesArray.find((route) => route.URL === page)
@@ -110,18 +110,9 @@ export const bootstrapH3Server = (app: HyperApp) => {
 
       if (event.method === 'POST' && serverModule) {
         const action = serverModule.action
-        const multipartFormData = await readMultipartFormData(event)
-
-        if (multipartFormData && action) {
+        if (action) {
           try {
-            const fields: any = {}
-            if (multipartFormData)
-              for (const field of multipartFormData) {
-                if (field.name && !field.filename) fields[field.name] = field.data.toString()
-                if (field.name && field.filename) fields[field.name] = field
-              }
-
-            return await action(fields, event)
+            return await action(await parseBody(event), event)
           } catch (err) {
             return
           }

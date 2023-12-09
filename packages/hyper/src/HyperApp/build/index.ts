@@ -37,18 +37,21 @@ export const hyperBuild = async () => {
 
   await buildClientHydration(app)
   await buildServerBundles(app)
+
   const configPath = joinURL(process.cwd(), 'hyper.config.js')
-  const configOutFile = joinURL(process.cwd(), '.hyper/', 'hyper.config.js')
+  const configOutFile = joinURL(process.cwd(), '.hyper/', 'hyper.config.mjs')
 
   if (existsSync(configPath))
     await build({
-      bundle: true,
+      bundle: false,
       entryPoints: [configPath],
       outfile: configOutFile,
       minify: true,
       target: 'esnext',
       jsx: 'automatic',
+      format: 'esm',
       platform: 'neutral',
+      mainFields: ['main', 'module'],
       plugins: [polyfillNode()],
     })
 }

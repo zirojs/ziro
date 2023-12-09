@@ -62,8 +62,9 @@ export class Cloudflare implements EdgeProvider {
   async generate() {
     console.log(chalk.yellow('Generating worker bundle...'))
     // const config = await import('./hyper.config.js')
-    if (existsSync(joinURL(process.cwd(), '.hyper', 'hyper.config.js'))) {
-      workerCode = workerCode.replace('--config', "const config = await import('./hyper.config.js')")
+    if (existsSync(joinURL(process.cwd(), '.hyper', 'hyper.config.mjs'))) {
+      console.log('config exists')
+      workerCode = workerCode.replace('--config', "const config = (await import('./hyper.config.mjs')).default")
     } else {
       workerCode = workerCode.replace('--config', `const config = ${JSON.stringify(defaultHyperconfig)}`)
     }

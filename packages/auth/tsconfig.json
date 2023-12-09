@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
-		"module": "ESNext",
+		"module": "NodeNext",
 		"target": "es6",
 		"strict": true,
-		"moduleResolution": "node",
+		"moduleResolution": "NodeNext",
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
@@ -13,7 +13,8 @@
 		"jsx": "react-jsx",
 		"declaration": true,
 		"noEmit": true,
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true
 	},
 	"include": [
 		"./**/*.tsx",

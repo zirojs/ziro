@@ -9,7 +9,7 @@ import { generateBuildDirectoryFromFilename, isHyperPage } from '../utils/hyperP
 import { hyperBabelClientBundle } from './babel-plugins/client-bundle'
 
 export const buildClientHydration = async (app: HyperApp) => {
-  const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath)
+  const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath).filter((d) => !!d) as string[]
 
   await build(
     extend(defaultBuildConfig, {

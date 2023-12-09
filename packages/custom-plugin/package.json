@@ -12,7 +12,7 @@
     "dist"
   ],
   "peerDependencies": {
-    "@hyper-insights/hyper": "^0.0.7",
+    "@hyper-insights/hyper": "^0.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

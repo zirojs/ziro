@@ -5,6 +5,8 @@ import { FC } from 'react'
 import { isDevelopment } from 'std-env'
 import { hyperRouteHandler } from './server'
 
+export * from 'h3'
+
 export enum Environment {
   DEV = 1,
   PRODUCTION = 2,

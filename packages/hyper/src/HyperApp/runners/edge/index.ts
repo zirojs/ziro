@@ -1,7 +1,8 @@
-import { App, createApp, eventHandler, getRequestURL, getValidatedQuery, readMultipartFormData } from 'h3'
+import { App, createApp, eventHandler, getRequestURL, getValidatedQuery } from 'h3'
 import { createRouter } from 'radix3'
 import { RouteData } from '../../lib/RouterObj'
 import { PageAttrs, attachPageAttrs } from '../../lib/htmlInjector'
+import { parseBody } from '../../utils/parseBody'
 import { loadPageModules, pageSSRRenderer } from './pageRenderer'
 import { pathGenerator } from './pathGenerator'
 
@@ -98,15 +99,9 @@ export const setupFsRoutes = (app: App, routes: any) => {
 
         if (event.method === 'POST') {
           const action = serverModule.action
-          const multipartFormData = await readMultipartFormData(event)
-          if (multipartFormData && action) {
+          if (action) {
             try {
-              const fields: any = {}
-              for (const field of multipartFormData) {
-                if (field.name && !field.filename) fields[field.name] = field.data.toString()
-                if (field.name && field.filename) fields[field.name] = field
-              }
-              return await action(fields, event)
+              return await action(await parseBody(event), event)
             } catch (err) {
               return
             }

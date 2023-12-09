@@ -2,6 +2,8 @@
   "name": "@hyper-insights/hyper",
   "version": "0.0.9",
   "description": "a ssr framework for react",
+  "main": "./dist/HyperApp/hyperApp.mjs",
+  "module": "./dist/HyperApp/hyperApp.mjs",
   "files": [
     "dist",
     "edge.js",
@@ -9,7 +11,10 @@
     "link.js",
     "link.d.ts",
     "page.js",
-    "page.d.ts"
+    "page.d.ts",
+    "h3.js",
+    "h3.mjs",
+    "h3.d.ts"
   ],
   "type": "module",
   "scripts": {
