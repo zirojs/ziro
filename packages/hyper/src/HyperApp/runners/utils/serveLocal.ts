@@ -12,4 +12,6 @@ export const serveLocal = async (app: HyperApp) => {
   console.log(`${chalk.yellowBright.bold('⚡️ Hyper ')} ${chalk.green(isDevelopment ? '[Development]' : '[Production]')}`)
   console.log()
   console.log(`Running on: ${chalk.green(listener.url)}`)
+
+  return listener
 }

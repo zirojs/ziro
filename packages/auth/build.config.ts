@@ -3,6 +3,7 @@ export default defineBuildConfig([
   {
     entries: ['./index.ts'],
     declaration: true,
+    clean: false,
     rollup: {
       inlineDependencies: true,
       esbuild: {

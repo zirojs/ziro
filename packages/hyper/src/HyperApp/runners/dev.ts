@@ -1,3 +1,4 @@
+import consola from 'consola'
 import { createRouter, eventHandler, fromNodeMiddleware, setHeaders } from 'h3'
 import { genImport } from 'knitwork'
 import { existsSync } from 'node:fs'
@@ -5,13 +6,37 @@ import path from 'node:path'
 import { dirname } from 'path'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
-import { ViteDevServer, createServer as createViteServer } from 'vite'
+import { ModuleNode, ViteDevServer, createServer as createViteServer } from 'vite'
 import { HyperConfig, HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
 import { pathGenerator } from '../lib/pathGenerator'
 import { serveLocal } from './utils/serveLocal'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
+const moduleImporterCheck = (modules: Set<ModuleNode> | undefined, checker: (file: string) => boolean): boolean => {
+  if (modules) {
+    for (const module of modules) {
+      if (module.file && checker(module.file)) return true
+      return moduleImporterCheck(module.importers, checker)
+    }
+  }
+  return false
+}
+
+const configFileWatcher = (vite: ViteDevServer, onChange: any) => {
+  const configPath = joinURL(process.cwd(), 'hyper.config.js')
+  vite.watcher.on('all', async (event, path) => {
+    console.log('file has changed')
+    const modules = vite.moduleGraph.getModulesByFile(path)
+    const isConfigChanged = moduleImporterCheck(modules, (path) => path === configPath)
+    if (isConfigChanged) {
+      const configModule = vite.moduleGraph.getModuleById(configPath)
+      if (configModule) vite.moduleGraph.invalidateModule(configModule)
+      await onChange()
+    }
+  })
+}
 
 export const runHyperDevServer = async () => {
   const vite = await createViteServer({
@@ -30,7 +55,18 @@ export const runHyperDevServer = async () => {
       },
     },
   })
+  const listeners: { onRestart: any } = {
+    onRestart: null,
+  }
+  configFileWatcher(vite, async () => {
+    consola.info('Config file has change. Restarting server...')
+    listeners.onRestart && listeners.onRestart()
+    startServer(vite, listeners)
+  })
+  startServer(vite, listeners)
+}
 
+const startServer = async (vite: ViteDevServer, listeners: any) => {
   const routeParser = async (route: HyperRoute) => {
     if (!route.serverBundle && route.filePath) {
       route.serverBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as HyperRouteServerProps
@@ -64,8 +100,7 @@ export const runHyperDevServer = async () => {
     })
   }
 
-  // regenerate the routes on file change
-  vite.watcher.on('ready', routerConfigure)
+  routerConfigure()
   vite.watcher.on('all', routerConfigure)
 
   const router = createRouter()
@@ -84,7 +119,8 @@ export const runHyperDevServer = async () => {
   app.transformHTML = async (template, event) => {
     return vite.transformIndexHtml(event.path, template)
   }
-  serveLocal(app)
+  const listener = await serveLocal(app)
+  listeners.onRestart = listener.close
 }
 
 const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {

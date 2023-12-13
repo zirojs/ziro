@@ -20,7 +20,7 @@ export default ({ authenticate, secredKey, cookieName = DEFAULT_AUTH_COOKIE_NAME
         URL: '/auth',
         clientBundle: async () => ({
           page: () => {
-            return 'hi'
+            return 'hi this is awesome'
           },
         }),
         serverBundle: async () => ({
