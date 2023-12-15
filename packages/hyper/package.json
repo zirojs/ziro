@@ -1,6 +1,6 @@
 {
   "name": "xhyper",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "a ssr framework for react",
   "main": "./dist/HyperApp/hyperApp.mjs",
   "module": "./dist/HyperApp/hyperApp.mjs",

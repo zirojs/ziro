@@ -1,6 +1,6 @@
 {
   "name": "xhyper-plugin-commerce",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "e-commerce tool built on top of @hyper-inssights/hyper",
   "type": "module",
   "scripts": {
