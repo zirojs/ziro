@@ -9,7 +9,7 @@ const minimist = require('minimist')
 const path = require('node:path')
 const { yellow, lightBlue, reset, red, green } = require('kolorist')
 
-const templates = fs.readdirSync('./templates')
+const templates = fs.readdirSync(path.resolve(__dirname, './templates'))
 
 const renameFiles = {
   _gitignore: '.gitignore',
