@@ -4,6 +4,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "publish": "lerna run build --scope xhyper && lerna publish"
+  },
   "devDependencies": {
     "lerna": "^5.3.0"
   },
