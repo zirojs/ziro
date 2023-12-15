@@ -1,9 +1,9 @@
-const prompts = require('prompts')
-const fs = require('node:fs')
-const lodash = require('lodash')
-const minimist = require('minimist')
-const path = require('node:path')
-const { yellow, lightBlue, reset, red, green } = require('kolorist')
+import { green, lightBlue, red, reset, yellow } from 'kolorist'
+import lodash from 'lodash'
+import minimist from 'minimist'
+import fs from 'node:fs'
+import path from 'node:path'
+import prompts from 'prompts'
 
 const templates = fs.readdirSync('./templates')
 
