@@ -1,5 +1,5 @@
 {
-  "name": "@hyper-insights/hyper",
+  "name": "xhyper",
   "version": "0.0.10",
   "description": "a ssr framework for react",
   "main": "./dist/HyperApp/hyperApp.mjs",

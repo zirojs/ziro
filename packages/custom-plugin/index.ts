@@ -1,4 +1,4 @@
-import { HyperApp } from '@hyper-insights/hyper/dist/HyperApp/hyperApp'
+import { HyperApp } from 'xhyper/dist/HyperApp/hyperApp'
 import { resolve } from 'node:path'
 import * as url from 'url'
 

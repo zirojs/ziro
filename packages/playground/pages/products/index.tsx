@@ -1,4 +1,4 @@
-import Link from '@hyper-insights/hyper/link'
+import Link from 'xhyper/link'
 
 export const page = () => {
   return (

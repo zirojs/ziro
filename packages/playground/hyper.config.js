@@ -1,4 +1,4 @@
-import auth from '@hyper-insights/auth'
+import auth from 'xhyper-plugin-auth'
 
 export default {
   edge: false,

@@ -8,7 +8,7 @@ import { defaultHyperconfig } from '../../../hyperApp'
 import { readJsonFile } from '../../../lib/readJsonFile'
 import { EdgeProvider } from './interface'
 let workerCode = `
-import { HyperEdgeRunner } from '@hyper-insights/hyper/edge'
+import { HyperEdgeRunner } from 'xhyper/edge'
 import { joinURL } from 'ufo'
 import {toWebHandler} from 'h3'
 

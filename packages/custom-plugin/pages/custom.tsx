@@ -1,4 +1,4 @@
-import { HyperPage } from '@hyper-insights/hyper/page'
+import { HyperPage } from 'xhyper/page'
 
 export const page: HyperPage = ({ loaderData }) => {
   return (

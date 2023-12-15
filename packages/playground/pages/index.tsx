@@ -1,5 +1,5 @@
-import Link from '@hyper-insights/hyper/link'
-import { HyperPage, useAction, usePageLoader } from '@hyper-insights/hyper/page'
+import Link from 'xhyper/link'
+import { HyperPage, useAction, usePageLoader } from 'xhyper/page'
 import { posts as PostModal, db } from '../drizzle'
 import './style.css'
 

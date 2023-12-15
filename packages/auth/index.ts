@@ -1,6 +1,6 @@
-import { HyperApp } from '@hyper-insights/hyper'
-import { H3Event, getCookie, getHeader, setCookie, setResponseStatus } from '@hyper-insights/hyper/h3.js'
 import * as jose from 'jose'
+import { HyperApp } from 'xhyper'
+import { H3Event, getCookie, getHeader, setCookie, setResponseStatus } from 'xhyper/h3.js'
 
 export const DEFAULT_AUTH_COOKIE_NAME = 'HYPER_AUTH_TOKEN'
 
@@ -14,7 +14,7 @@ export type HyperAuthOptions = {
 export default ({ authenticate, secredKey, cookieName = DEFAULT_AUTH_COOKIE_NAME }: HyperAuthOptions) => {
   const secret = jose.base64url.decode(secredKey)
   return {
-    name: '@hyper-insights/auth',
+    name: 'xhyper-plugin-auth',
     install: (app: HyperApp) => {
       app.addPage({
         URL: '/auth',
