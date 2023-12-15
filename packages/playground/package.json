@@ -1,6 +1,6 @@
 {
   "name": "xhyper-playground",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "hyper playground",
   "license": "MIT",
   "private": true,
@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
-    "xhyper": "^0.0.10",
     "@types/ws": "^8.5.10",
     "autoprefixer": "^10.4.15",
     "dotenv": "^16.3.1",
@@ -25,15 +24,16 @@
     "nodemon": "^3.0.1",
     "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3",
-    "wrangler": "^3.10.1"
+    "wrangler": "^3.10.1",
+    "xhyper": "^0.0.11"
   },
   "dependencies": {
-    "xhyper-plugin-auth": "^0.0.10",
-    "xhyper-plugin-custom-plugin": "^0.0.10",
     "@neondatabase/serverless": "^0.6.0",
     "drizzle-orm": "^0.29.1",
     "pg": "^8.11.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "xhyper-plugin-auth": "^0.0.11",
+    "xhyper-plugin-custom-plugin": "^0.0.11"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "xhyper-plugin-custom-plugin",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "private": true,
   "main": "./index.ts",
@@ -12,9 +12,9 @@
     "dist"
   ],
   "peerDependencies": {
-    "xhyper": "^0.0.9",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "xhyper": "^0.0.9"
   },
   "author": "Nariman Movaffaghi",
   "license": "ISC",
