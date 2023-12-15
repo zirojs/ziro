@@ -17,6 +17,7 @@ export const buildServerBundles = async (app: HyperApp) => {
   await build(
     extend(defaultBuildConfig, {
       build: {
+        manifest: true,
         ssr: true,
         minify,
         outDir: '.hyper/server-bundles',

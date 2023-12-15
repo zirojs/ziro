@@ -14,6 +14,7 @@ export const buildClientHydration = async (app: HyperApp) => {
   await build(
     extend(defaultBuildConfig, {
       build: {
+        manifest: true,
         outDir: '.hyper/client-bundles',
         rollupOptions: {
           input: [...(await glob(joinURL(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' })), ...pluginsFiles],
