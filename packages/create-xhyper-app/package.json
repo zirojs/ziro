@@ -1,6 +1,6 @@
 {
   "name": "create-xhyper-app",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "create xhyper app",
   "bin": {
     "create-xhyper-app": "./index.js"

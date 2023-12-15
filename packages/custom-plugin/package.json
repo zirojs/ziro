@@ -1,6 +1,6 @@
 {
   "name": "xhyper-plugin-custom-plugin",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "private": true,
   "main": "./index.ts",
