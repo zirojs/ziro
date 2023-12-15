@@ -69,7 +69,7 @@ export class Cloudflare implements EdgeProvider {
       workerCode = workerCode.replace('--config', `const config = ${JSON.stringify(defaultHyperconfig)}`)
     }
 
-    const manifest = readJsonFile(joinURL(this.serverBundlesDir, 'manifest.json'))
+    const manifest = readJsonFile(joinURL(this.serverBundlesDir, '.vite/manifest.json'))
 
     let parsedStrings = ''
     Object.keys(manifest).forEach((key) => {
@@ -86,7 +86,7 @@ export class Cloudflare implements EdgeProvider {
 
     workerCode = workerCode.replace(
       '--manifest',
-      `const manifest = await import(${JSON.stringify(joinURL(process.cwd(), '.hyper', 'server-bundles', 'manifest.json'))})
+      `const manifest = await import(${JSON.stringify(joinURL(process.cwd(), '.hyper', 'server-bundles', '.vite/manifest.json'))})
 
 		${parsedStrings}`
     )

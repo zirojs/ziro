@@ -20,7 +20,7 @@ export const runHyperProductionServer = async () => {
   const configPath = joinURL(process.cwd(), '.hyper', 'hyper.config.mjs')
   if (existsSync(configPath)) config = (await import(configPath)).default
 
-  const data = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', 'manifest.json'))
+  const data = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', '.vite','manifest.json'))
 
   const routeParser = async (route: HyperRoute) => {
     if (route.filePath) {
