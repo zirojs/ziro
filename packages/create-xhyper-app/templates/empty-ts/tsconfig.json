@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"module": "ESNext",
+		"target": "es6",
+		"strict": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"outDir": "dist",
+		"resolveJsonModule": true,
+		"rootDir": ".",
+		"jsx": "react-jsx",
+		"declaration": true,
+		"noEmit": true,
+		"allowImportingTsExtensions": true,
+		"types": [
+			"vite/client"
+		]
+	}
+}
