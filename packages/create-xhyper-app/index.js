@@ -1,5 +1,3 @@
-'use strict'
-
 const prompts = require('prompts')
 const fs = require('node:fs')
 const lodash = require('lodash')
