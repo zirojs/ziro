@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "hyper dev",
-    "build": "hyper dev",
+    "build": "hyper build",
     "start": "hyper preview"
   },
   "dependencies": {
