@@ -1,3 +1,5 @@
+import babel from '@babel/core'
+import react from '@vitejs/plugin-react'
 import consola from 'consola'
 import { createRouter, eventHandler, fromNodeMiddleware, setHeaders } from 'h3'
 import { genImport } from 'knitwork'
@@ -7,18 +9,24 @@ import { dirname } from 'path'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
 import { ModuleNode, ViteDevServer, createServer as createViteServer } from 'vite'
+import { hyperBabelClientBundle } from '../build/babel-plugins/client-bundle'
 import { HyperConfig, HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
 import { pathGenerator } from '../lib/pathGenerator'
+import { isHyperPage } from '../utils/hyperPages'
 import { serveLocal } from './utils/serveLocal'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const moduleImporterCheck = (modules: Set<ModuleNode> | undefined, checker: (file: string) => boolean): boolean => {
+const moduleImporterCheck = (modules: Set<ModuleNode> | undefined, checker: (file: string) => boolean, parentModule: ModuleNode | null = null): boolean => {
   if (modules) {
     for (const module of modules) {
-      if (module.file && checker(module.file)) return true
-      return moduleImporterCheck(module.importers, checker)
+      if (!parentModule || (parentModule && parentModule.file !== module.file)) {
+        console.log(parentModule?.file, module.file)
+
+        if (module.file && checker(module.file)) return true
+        return moduleImporterCheck(module.importers, checker, module)
+      }
     }
   }
   return false
@@ -27,12 +35,15 @@ const moduleImporterCheck = (modules: Set<ModuleNode> | undefined, checker: (fil
 const configFileWatcher = (vite: ViteDevServer, onChange: any) => {
   const configPath = joinURL(process.cwd(), 'hyper.config.js')
   vite.watcher.on('all', async (event, path) => {
-    console.log('file has changed')
-    const modules = vite.moduleGraph.getModulesByFile(path)
-    const isConfigChanged = moduleImporterCheck(modules, (path) => path === configPath)
+    const configModule = vite.moduleGraph.getModuleById(configPath)
+
+    let isConfigChanged = false
+    if (configModule?.ssrImportedModules)
+      for (const m of configModule?.ssrImportedModules) {
+        if (m.file === path) isConfigChanged = true
+      }
     if (isConfigChanged) {
-      const configModule = vite.moduleGraph.getModuleById(configPath)
-      if (configModule) vite.moduleGraph.invalidateModule(configModule)
+      vite.moduleGraph.onFileChange(configPath)
       await onChange()
     }
   })
@@ -40,11 +51,54 @@ const configFileWatcher = (vite: ViteDevServer, onChange: any) => {
 
 export const runHyperDevServer = async () => {
   const vite = await createViteServer({
-    server: { middlewareMode: true },
+    server: { middlewareMode: true, hmr: true },
     appType: 'custom',
     root: process.cwd(),
     configFile: false,
     clearScreen: false,
+    plugins: [
+      {
+        enforce: 'pre',
+        name: 'hyper-pages-hmr',
+        transform(code, id, options = { ssr: false }) {
+          if (isHyperPage(id) && !!!options.ssr) {
+            return babel.transformSync(
+              `
+						${genImport('react', 'React')}
+						${code}
+
+						if(import.meta.hot){
+							import.meta.hot.accept((newModule) => {
+								if (newModule) {
+									mount(newModule.page)
+								}
+							})
+						}
+
+						`,
+              {
+                filename: id,
+                targets: {
+                  esmodules: true,
+                },
+                presets: [
+                  '@babel/preset-typescript',
+                  [
+                    '@babel/preset-react',
+                    {
+                      development: true,
+                    },
+                  ],
+                ],
+                plugins: [hyperBabelClientBundle],
+              }
+            )?.code!
+          }
+          return code
+        },
+      },
+      react(),
+    ],
     build: {
       ssrEmitAssets: true,
       ssr: true,
@@ -55,6 +109,7 @@ export const runHyperDevServer = async () => {
       },
     },
   })
+
   const listeners: { onRestart: any } = {
     onRestart: null,
   }
@@ -129,16 +184,22 @@ const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {
       `
 ${genImport(filePath, [{ name: 'page', as: 'Page' }, 'loader'])}
 ${genImport('react-dom/client', 'ReactDOM')}
+${genImport('react', ['Fragment'])}
 ${genImport('xhyper/page', ['PageProvider'])}
 
-window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
-	<PageProvider>
-		<Page />
-	</PageProvider>
-)
+const mount = (Page = Fragment) => {
+	if(!window.root)
+		window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
+			<PageProvider>
+				<Page />
+			</PageProvider>
+		)
+}
+mount(Page)
 `,
       filePath
     )
   ).code
+
   return code
 }

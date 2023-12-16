@@ -1,7 +1,7 @@
 import Link from 'xhyper/link'
 import { HyperPage, useAction, usePageLoader } from 'xhyper/page'
 import { posts as PostModal, db } from '../drizzle'
-import './style.css'
+// import './style.css'
 
 export const loader = async () => {
   const posts = await db.select().from(PostModal)
@@ -39,7 +39,7 @@ export const page: HyperPage = ({ loaderData }) => {
 
   return (
     <div>
-      <span>Loader Data: {JSON.stringify(loaderData)}</span>
+      <span>Loader Data: {JSON.stringify(loaderData, null, 2)}</span>
       <form className="flex flex-col max-w-[300px] gap-2 p-8" onSubmit={submit}>
         <div className="flex flex-col gap-2">
           <label htmlFor="name">Post title</label>

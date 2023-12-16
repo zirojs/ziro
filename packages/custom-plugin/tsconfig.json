@@ -7,7 +7,6 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"outDir": "dist",
 		"resolveJsonModule": true,
 		"rootDir": ".",
 		"jsx": "react-jsx",

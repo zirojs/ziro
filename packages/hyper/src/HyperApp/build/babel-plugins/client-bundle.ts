@@ -23,13 +23,24 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
         isWindowDefined,
         t.blockStatement([
           t.variableDeclaration('const', [t.variableDeclarator(t.identifier('Page'), t.identifier('page'))]),
-          t.expressionStatement(
-            t.assignmentExpression(
-              '=',
-              t.identifier('window.root'),
-              t.callExpression(t.identifier('ReactDOM.hydrateRoot'), [
-                t.callExpression(t.identifier('document.getElementById'), [t.stringLiteral('hyper-app')]),
-                // t.callExpression(t.identifier('page'), []),
+          t.ifStatement(
+            t.binaryExpression('===', t.unaryExpression('typeof', t.identifier('window.root')), t.stringLiteral('undefined')),
+            t.expressionStatement(
+              t.assignmentExpression(
+                '=',
+                t.identifier('window.root'),
+                t.callExpression(t.identifier('ReactDOM.hydrateRoot'), [
+                  t.callExpression(t.identifier('document.getElementById'), [t.stringLiteral('hyper-app')]),
+                  // t.callExpression(t.identifier('page'), []),
+                  t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('PageProvider'), [], false), t.jsxClosingElement(t.jsxIdentifier('PageProvider')), [
+                    // t.jsxExpressionContainer(t.callExpression(t.identifier('page'), [])),
+                    t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('Page'), [], false), t.jsxClosingElement(t.jsxIdentifier('Page')), []),
+                  ]),
+                ])
+              )
+            ),
+            t.expressionStatement(
+              t.callExpression(t.identifier('window.root.render'), [
                 t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('PageProvider'), [], false), t.jsxClosingElement(t.jsxIdentifier('PageProvider')), [
                   // t.jsxExpressionContainer(t.callExpression(t.identifier('page'), [])),
                   t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('Page'), [], false), t.jsxClosingElement(t.jsxIdentifier('Page')), []),
@@ -40,7 +51,10 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
         ])
       )
 
-      path.pushContainer('body', ifStatement)
+      const mountFn = t.variableDeclaration('const', [t.variableDeclarator(t.identifier('mount'), t.arrowFunctionExpression([t.identifier('page')], t.blockStatement([ifStatement])))])
+
+      path.pushContainer('body', mountFn)
+      path.pushContainer('body', t.expressionStatement(t.callExpression(t.identifier('mount'), [t.identifier('page')])))
     },
   },
 })

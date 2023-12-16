@@ -3,5 +3,5 @@ export const generatePaths = async () => {
 }
 
 export const page = () => {
-  return <span>hi here</span>
+  return <span>hi asdf </span>
 }
