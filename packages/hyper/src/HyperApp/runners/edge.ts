@@ -4,11 +4,31 @@ import { Environment, HyperApp, HyperConfig, HyperRoute, HyperRouteClientBundle,
 import { bootstrapH3Server } from '../server'
 import { pathGenerator } from './edge/pathGenerator'
 
-const normalizeManifestData = (manifest: { css?: string[] }) => {
-  if (manifest.css) {
-    for (let i = 0; i < manifest.css.length; i++) {
-      manifest.css[i] = joinURL('/_hyper', manifest.css[i])
+type ManifestFile = {
+  css?: string[]
+  file: string
+  imports?: string[]
+}
+
+const getImportersCss = (importer: ManifestFile, css: Set<string>, manifestData: Record<string, ManifestFile>) => {
+  if (importer.css) {
+    importer.css.forEach((c) => {
+      css.add(c)
+    })
+  }
+  if (importer.imports) {
+    for (let i = 0; i < importer.imports.length; i++) {
+      if (!!manifestData[importer.imports[i]]) getImportersCss(manifestData[importer.imports[i]], css, manifestData)
     }
+  }
+}
+
+const normalizeManifestData = (manifest: ManifestFile, allManifest: Record<string, ManifestFile>) => {
+  const css = new Set<string>()
+  getImportersCss(manifest, css, allManifest)
+  manifest.css = []
+  for (const c of css) {
+    manifest.css.push(joinURL('/_hyper', c))
   }
   return manifest
 }
@@ -27,7 +47,7 @@ export const HyperEdgeRunner = async (
       const routeManifest = manifest[routeManifestKey]
 
       // @ts-ignore
-      route.manifestData = normalizeManifestData(routeManifest)
+      route.manifestData = normalizeManifestData(routeManifest, manifest)
       route.filePath = routeManifest.file
     }
     return route
@@ -55,7 +75,7 @@ export const HyperEdgeRunner = async (
       URL: '/' + route,
       filePath: manifest[`pages/${paths[route]}`].file,
       // @ts-ignore
-      manifestData: normalizeManifestData(manifest[`pages/${paths[route]}`]),
+      manifestData: normalizeManifestData(manifest[`pages/${paths[route]}`], manifest),
       clientBundle: manifest[`pages/${paths[route]}`].clientBundle,
       serverBundle: manifest[`pages/${paths[route]}`].serverBundle,
     })

@@ -54,11 +54,12 @@ export const hyperRouteHandler = async (route: HyperRuntimeRoute, app: HyperApp,
   const appHtml = await render()
   let html = htmlContent.replace(`<!--ssr-outlet-->`, appHtml)
 
-  if (route.filePath)
+  if (route.filePath) {
     pageAttrs.scripts.push({
       type: 'module',
-      src: joinURL(route.filePath.replace(process.cwd(), '')),
+      src: joinURL('/_hyper', route.filePath.replace(process.cwd(), '/')),
     })
+  }
 
   if (route.manifestData?.css) {
     route.manifestData?.css.map((href) => {

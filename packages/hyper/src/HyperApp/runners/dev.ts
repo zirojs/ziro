@@ -62,6 +62,7 @@ export const runHyperDevServer = async () => {
         name: 'hyper-mount-page',
         transform(code, id, options = { ssr: false }) {
           if (isHyperPage(id) && !!!options.ssr) {
+            console.log(id, isHyperPage(id))
             const output = babel.transformSync(code, {
               filename: id,
               targets: {

@@ -1,16 +1,37 @@
 import { createRouter, eventHandler, setHeaders } from 'h3'
 import { existsSync, readFileSync } from 'node:fs'
+import { extname } from 'node:path'
 import { joinURL } from 'ufo'
 import { HyperRoute, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
 import { pathGenerator } from '../lib/pathGenerator'
 import { readJsonFile } from '../lib/readJsonFile'
 import { serveLocal } from './utils/serveLocal'
 
-const normalizeManifestData = (manifest: { css?: string[] }) => {
-  if (manifest.css) {
-    for (let i = 0; i < manifest.css.length; i++) {
-      manifest.css[i] = joinURL('/_hyper', manifest.css[i])
+type ManifestFile = {
+  css?: string[]
+  file: string
+  imports?: string[]
+}
+
+const getImportersCss = (importer: ManifestFile, css: Set<string>, manifestData: Record<string, ManifestFile>) => {
+  if (importer.css) {
+    importer.css.forEach((c) => {
+      css.add(c)
+    })
+  }
+  if (importer.imports) {
+    for (let i = 0; i < importer.imports.length; i++) {
+      if (!!manifestData[importer.imports[i]]) getImportersCss(manifestData[importer.imports[i]], css, manifestData)
     }
+  }
+}
+
+const normalizeManifestData = (manifest: ManifestFile, allManifest: Record<string, ManifestFile>) => {
+  const css = new Set<string>()
+  getImportersCss(manifest, css, allManifest)
+  manifest.css = []
+  for (const c of css) {
+    manifest.css.push(joinURL('/_hyper', c))
   }
   return manifest
 }
@@ -20,12 +41,12 @@ export const runHyperProductionServer = async () => {
   const configPath = joinURL(process.cwd(), '.hyper', 'hyper.config.mjs')
   if (existsSync(configPath)) config = (await import(configPath)).default
 
-  const data = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', '.vite','manifest.json'))
+  const manifest = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', '.vite', 'manifest.json'))
 
   const routeParser = async (route: HyperRoute) => {
     if (route.filePath) {
-      const routeManifestKey: any = Object.keys(data).find((key) => key.endsWith(route.filePath!) && !key.startsWith('pages/'))
-      const routeManifest = data[routeManifestKey]
+      const routeManifestKey: any = Object.keys(manifest).find((key) => key.endsWith(route.filePath!) && !key.startsWith('pages/'))
+      const routeManifest = manifest[routeManifestKey]
 
       route.clientBundle = async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', routeManifest.file))
       route.serverBundle = async () => {
@@ -34,7 +55,7 @@ export const runHyperProductionServer = async () => {
         return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
       }
       // @ts-ignore
-      route.manifestData = normalizeManifestData(routeManifest)
+      route.manifestData = normalizeManifestData(routeManifest, manifest)
       route.filePath = routeManifest.file
     }
     return route
@@ -44,7 +65,7 @@ export const runHyperProductionServer = async () => {
 
   const pages: Record<string, string[]> = {}
 
-  for (const file of Object.keys(data))
+  for (const file of Object.keys(manifest))
     if (file.startsWith('pages/')) {
       const dir = file
         .replace(/(.*)pages\//i, '')
@@ -60,12 +81,12 @@ export const runHyperProductionServer = async () => {
   Object.keys(paths).forEach((route) => {
     app.routes.insert('/' + route, {
       URL: '/' + route,
-      filePath: data[`pages/${paths[route]}`].file,
+      filePath: manifest[`pages/${paths[route]}`].file,
       // @ts-ignore
-      manifestData: normalizeManifestData(data[`pages/${paths[route]}`]),
-      clientBundle: async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', data[`pages/${paths[route]}`].file)),
+      manifestData: normalizeManifestData(manifest[`pages/${paths[route]}`], manifest),
+      clientBundle: async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', manifest[`pages/${paths[route]}`].file)),
       serverBundle: async () => {
-        const pathSplit = data[`pages/${paths[route]}`].file.split('/')
+        const pathSplit = manifest[`pages/${paths[route]}`].file.split('/')
         pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
         return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
       },
@@ -91,6 +112,28 @@ export const runHyperProductionServer = async () => {
         'Content-Type': contentTypes[extension as keyof typeof contentTypes],
       })
       return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+    })
+  )
+
+  router.add(
+    '/**',
+    eventHandler(async (event) => {
+      const filePath = event.path
+      const isFileExists = existsSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+      const isFile = !!extname(filePath)
+      if (isFileExists && isFile) {
+        const extension = filePath.split('.')[filePath.split('.').length - 1]
+        const contentTypes = {
+          css: 'text/css',
+          js: 'text/javascript',
+          mjs: 'text/javascript',
+        }
+        if (contentTypes[extension as keyof typeof contentTypes])
+          setHeaders(event, {
+            'Content-Type': contentTypes[extension as keyof typeof contentTypes],
+          })
+        return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+      }
     })
   )
 

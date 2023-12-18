@@ -1,7 +1,8 @@
 import { joinURL } from 'ufo'
+import { namedRouteRegex, namedWildcardRouteRegex, rootRegex } from '../lib/pathGenerator'
 
 export const isHyperPage = (pagePath: string) => {
-  return pagePath.includes(joinURL('pages', '/')) && /\.(js|mjs|jsx|ts|tsx)$/.test(pagePath)
+  return pagePath.includes(joinURL('pages', '/')) && /\.(js|mjs|jsx|ts|tsx)$/.test(pagePath) && (namedRouteRegex.test(pagePath) || namedWildcardRouteRegex.test(pagePath) || rootRegex.test(pagePath))
 }
 
 export const generateBuildDirectoryFromFilename = (filename: string) => {
