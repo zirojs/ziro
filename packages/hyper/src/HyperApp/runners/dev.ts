@@ -59,40 +59,18 @@ export const runHyperDevServer = async () => {
     plugins: [
       {
         enforce: 'pre',
-        name: 'hyper-pages-hmr',
+        name: 'hyper-mount-page',
         transform(code, id, options = { ssr: false }) {
           if (isHyperPage(id) && !!!options.ssr) {
-            return babel.transformSync(
-              `
-						${genImport('react', 'React')}
-						${code}
-
-						if(import.meta.hot){
-							import.meta.hot.accept((newModule) => {
-								if (newModule) {
-									mount(newModule.page)
-								}
-							})
-						}
-
-						`,
-              {
-                filename: id,
-                targets: {
-                  esmodules: true,
-                },
-                presets: [
-                  '@babel/preset-typescript',
-                  [
-                    '@babel/preset-react',
-                    {
-                      development: true,
-                    },
-                  ],
-                ],
-                plugins: [hyperBabelClientBundle],
-              }
-            )?.code!
+            const output = babel.transformSync(code, {
+              filename: id,
+              targets: {
+                esmodules: true,
+              },
+              presets: ['@babel/preset-typescript'],
+              plugins: [hyperBabelClientBundle],
+            })?.code!
+            return output
           }
           return code
         },

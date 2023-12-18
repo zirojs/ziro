@@ -28,9 +28,8 @@ export const meta = ({ loaderData }: { loaderData: Awaited<ReturnType<typeof loa
   }
 }
 
-export const page: HyperPage = ({ loaderData }) => {
+export const Page: HyperPage = ({ loaderData }) => {
   const { refetch } = usePageLoader()
-
   const { submit, loading } = useAction({
     onSuccess: (data) => {
       refetch()

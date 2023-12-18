@@ -1,6 +1,6 @@
 import Link from 'xhyper/link'
 
-export const page = () => {
+export const Page = () => {
   return (
     <>
       <div className="block">products page here</div>

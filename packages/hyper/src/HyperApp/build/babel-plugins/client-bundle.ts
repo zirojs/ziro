@@ -38,15 +38,15 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
                   ]),
                 ])
               )
-            ),
-            t.expressionStatement(
-              t.callExpression(t.identifier('window.root.render'), [
-                t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('PageProvider'), [], false), t.jsxClosingElement(t.jsxIdentifier('PageProvider')), [
-                  // t.jsxExpressionContainer(t.callExpression(t.identifier('page'), [])),
-                  t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('Page'), [], false), t.jsxClosingElement(t.jsxIdentifier('Page')), []),
-                ]),
-              ])
             )
+            // t.expressionStatement(
+            //   t.callExpression(t.identifier('window.root.render'), [
+            //     t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('PageProvider'), [], false), t.jsxClosingElement(t.jsxIdentifier('PageProvider')), [
+            //       // t.jsxExpressionContainer(t.callExpression(t.identifier('page'), [])),
+            //       t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('Page'), [], false), t.jsxClosingElement(t.jsxIdentifier('Page')), []),
+            //     ]),
+            //   ])
+            // )
           ),
         ])
       )
@@ -54,7 +54,7 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
       const mountFn = t.variableDeclaration('const', [t.variableDeclarator(t.identifier('mount'), t.arrowFunctionExpression([t.identifier('page')], t.blockStatement([ifStatement])))])
 
       path.pushContainer('body', mountFn)
-      path.pushContainer('body', t.expressionStatement(t.callExpression(t.identifier('mount'), [t.identifier('page')])))
+      path.pushContainer('body', t.expressionStatement(t.callExpression(t.identifier('mount'), [t.identifier('Page')])))
     },
   },
 })

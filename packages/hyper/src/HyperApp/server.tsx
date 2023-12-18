@@ -35,10 +35,10 @@ export const renderSSR = async (route: HyperRuntimeRoute, pageAttrs: PageAttrs, 
   }
 
   return async () => {
-    if (!clientModule.page) {
+    if (!clientModule.Page) {
       return ''
     }
-    const Page = clientModule.page
+    const Page = clientModule.Page
     return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }

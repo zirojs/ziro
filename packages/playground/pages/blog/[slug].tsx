@@ -1,7 +1,6 @@
-export const generatePaths = async () => {
-  return ['beautiful-city']
-}
+import { useState } from 'react'
 
-export const page = () => {
-  return <span>blog</span>
+export const Page = () => {
+  const [state, setState] = useState('hi')
+  return <span onClick={setState.bind(null, 'yoo')}>{state} asdf f</span>
 }

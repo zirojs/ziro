@@ -11,7 +11,7 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
   const filePath = routeData.filePath
   const pageModule = await vite.ssrLoadModule(filePath)
 
-  if (!pageModule.page) {
+  if (!pageModule.Page) {
     vite.ws.send({
       type: 'error',
       err: {
@@ -24,7 +24,7 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
   return (
     await vite.pluginContainer.transform(
       `
-			imp { page as Page, loader } from ${JSON.stringify(filePath)};
+			imp { Page, loader } from ${JSON.stringify(filePath)};
 			${
         routeData.pageOnly
           ? `export { page: Page }`
@@ -99,10 +99,10 @@ export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => 
   }
 
   return async () => {
-    if (!clientBundle.page) {
+    if (!clientBundle.Page) {
       return ''
     }
-    const Page = clientBundle.page
+    const Page = clientBundle.Page
     return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }
