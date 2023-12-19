@@ -10,7 +10,7 @@
     "start": "hyper preview"
   },
   "dependencies": {
-    "xhyper": "^0.0.11",
+    "ziro": "^0.0.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

@@ -1,4 +1,4 @@
-import { HyperPage, useAction, usePageLoader } from 'xhyper/page'
+import { HyperPage, useAction, usePageLoader } from 'ziro/page'
 import { ArticlePreview } from '../components/Article/preview'
 import { DefaultLayout } from '../components/layouts'
 import { posts as PostModal, db } from '../drizzle'

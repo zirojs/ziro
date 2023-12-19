@@ -164,7 +164,7 @@ const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {
 ${genImport(filePath, [{ name: 'page', as: 'Page' }, 'loader'])}
 ${genImport('react-dom/client', 'ReactDOM')}
 ${genImport('react', ['Fragment'])}
-${genImport('xhyper/page', ['PageProvider'])}
+${genImport('ziro/page', ['PageProvider'])}
 
 const mount = (Page = Fragment) => {
 	if(!window.root)

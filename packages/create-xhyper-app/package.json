@@ -1,9 +1,9 @@
 {
-  "name": "create-xhyper-app",
+  "name": "create-ziro-app",
   "version": "0.0.21",
-  "description": "create xhyper app",
+  "description": "create ziro app",
   "bin": {
-    "create-xhyper-app": "./index.js"
+    "create-ziro-app": "./index.js"
   },
   "author": "Nariman Movaffaghi",
   "license": "MIT",

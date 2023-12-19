@@ -1,5 +1,5 @@
 {
-  "name": "xhyper-plugin-auth",
+  "name": "ziro-plugin-auth",
   "version": "0.0.21",
   "description": "",
   "private": false,
@@ -15,7 +15,7 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "xhyper": "^0.0.9"
+    "ziro": "^0.0.21"
   },
   "author": "Nariman Movaffaghi",
   "license": "ISC",

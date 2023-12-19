@@ -1,4 +1,4 @@
-import auth from 'xhyper-plugin-auth'
+import auth from 'ziro-plugin-auth'
 
 export default {
   edge: false,

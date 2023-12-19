@@ -1,6 +1,6 @@
-import { HyperApp } from 'xhyper/dist/HyperApp/hyperApp'
 import { resolve } from 'node:path'
 import * as url from 'url'
+import { HyperApp } from 'ziro/dist/HyperApp/hyperApp'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 

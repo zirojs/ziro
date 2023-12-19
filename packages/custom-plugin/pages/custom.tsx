@@ -1,4 +1,4 @@
-import { HyperPage } from 'xhyper/page'
+import { HyperPage } from 'ziro/page'
 
 export const page: HyperPage = ({ loaderData }) => {
   return (
