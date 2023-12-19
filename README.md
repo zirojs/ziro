@@ -1,2 +1,2 @@
-# Hyper
-### Vite + Prisma + Compiler = :fire:
+# Ziro
+### Vite based SSR Framework
