@@ -1,6 +1,6 @@
 {
   "name": "ziro",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "a ssr framework for react",
   "main": "./dist/HyperApp/hyperApp.mjs",
   "module": "./dist/HyperApp/hyperApp.mjs",
