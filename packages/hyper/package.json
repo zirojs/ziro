@@ -1,5 +1,5 @@
 {
-  "name": "xhyper",
+  "name": "ziro",
   "version": "0.0.20",
   "description": "a ssr framework for react",
   "main": "./dist/HyperApp/hyperApp.mjs",
