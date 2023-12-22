@@ -3533,10 +3533,10 @@
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.2.tgz"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/multiparty@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.npmjs.org/@types/multiparty/-/multiparty-0.0.34.tgz"
-  integrity sha512-tURhLB1wrxGUbULtIVsecuCgyLOXQr+nacysa7fpYUvCwn61VDEkxgusq7gaFmYCMuTYz+n+hTiI6zH4ytAwJw==
+"@types/multiparty@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@types/multiparty/-/multiparty-0.0.36.tgz#4e0851da23a259e01d0f83edfe964a20d1c587b1"
+  integrity sha512-DNqs3xYFMLgQfYrYuuleox1wzpUJxOgR8+WQ99DPu1B6zLT+sCMMsWfqEFTThPrI3109q81sChUKg/QM/ZUPiw==
   dependencies:
     "@types/node" "*"
 
