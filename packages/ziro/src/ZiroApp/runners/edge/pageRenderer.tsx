@@ -5,7 +5,7 @@ import { ViteDevServer } from 'vite'
 import { RouteData } from '../../lib/RouterObj'
 import { PageAttrs } from '../../lib/htmlInjector'
 
-export const hyperLoaderDataVariableName = 'hyperLoaderData'
+export const ziroLoaderDataVariableName = 'ziroLoaderData'
 
 export const transformPageContent = async (vite: ViteDevServer, routeData: RouteData & { pageOnly: boolean }) => {
   const filePath = routeData.filePath
@@ -29,11 +29,11 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
         routeData.pageOnly
           ? `export { page: Page }`
           : `
-			// imp RouterContext from 'hyper/router-context'
+			// imp RouterContext from 'ziro/router-context'
 			imp ReactDOM from 'react-dom/client';
       imp {PageProvider} from 'ziro/page'
 
-			window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
+			window.root = ReactDOM.hydrateRoot(document.getElementById("ziro-app"),
 			// <RouterContext>{
 				<PageProvider>
 					<Page />
@@ -87,7 +87,7 @@ export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => 
   if (typeof loader === 'function' && loader) {
     loaderData = await loader()
     pageAttrs.scripts.push({
-      dangerouslySetInnerHTML: { __html: `window.${hyperLoaderDataVariableName} = ${JSON.stringify(loaderData)}` },
+      dangerouslySetInnerHTML: { __html: `window.${ziroLoaderDataVariableName} = ${JSON.stringify(loaderData)}` },
     })
   }
 

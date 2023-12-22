@@ -40,7 +40,7 @@ export const PageProvider: FC<PageProviderProps> = ({ children, loaderData }) =>
       })
   }, [])
   const loader = {
-    loaderData: loaderData || (window as any)['hyperLoaderData'],
+    loaderData: loaderData || (window as any)['ziroLoaderData'],
     refetch: refetchPageLoader,
   }
   const [pageData, setPageData] = useState({
@@ -55,7 +55,7 @@ export const PageProvider: FC<PageProviderProps> = ({ children, loaderData }) =>
   )
 }
 
-export type HyperPage = FC<{ loaderData: any }>
+export type ZiroPage = FC<{ loaderData: any }>
 export type UseActionOptions<T> = {
   onSuccess: (data: T) => unknown
 }

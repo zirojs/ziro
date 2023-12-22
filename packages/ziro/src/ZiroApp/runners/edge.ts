@@ -1,7 +1,7 @@
 import { createRouter } from 'h3'
 import { joinURL } from 'ufo'
-import { Environment, HyperApp, HyperConfig, HyperRoute, HyperRouteClientBundle, HyperRouteServerBundle } from '../hyperApp'
 import { bootstrapH3Server } from '../server'
+import { Environment, ZiroApp, ZiroConfig, ZiroRoute, ZiroRouteClientBundle, ZiroRouteServerBundle } from '../ziro'
 import { pathGenerator } from './edge/pathGenerator'
 
 type ManifestFile = {
@@ -28,20 +28,20 @@ const normalizeManifestData = (manifest: ManifestFile, allManifest: Record<strin
   getImportersCss(manifest, css, allManifest)
   manifest.css = []
   for (const c of css) {
-    manifest.css.push(joinURL('/_hyper', c))
+    manifest.css.push(joinURL('/_ziro', c))
   }
   return manifest
 }
 
-export const HyperEdgeRunner = async (
-  config: HyperConfig,
-  manifest: Record<string, { file: string; module: any; isEntry: boolean; clientBundle: HyperRouteClientBundle; serverBundle: HyperRouteServerBundle }>
+export const ziroEdgeRunner = async (
+  config: ZiroConfig,
+  manifest: Record<string, { file: string; module: any; isEntry: boolean; clientBundle: ZiroRouteClientBundle; serverBundle: ZiroRouteServerBundle }>
 ) => {
-  const app = new HyperApp(Environment.PRODUCTION, [], {
+  const app = new ZiroApp(Environment.PRODUCTION, [], {
     isEdge: true,
   })
 
-  app.routeParser = async (route: HyperRoute) => {
+  app.routeParser = async (route: ZiroRoute) => {
     if (route.filePath) {
       const routeManifestKey: any = Object.keys(manifest).find((key) => key.endsWith(route.filePath!) && !key.startsWith('pages/'))
       const routeManifest = manifest[routeManifestKey]
@@ -85,9 +85,9 @@ export const HyperEdgeRunner = async (
   const router = createRouter()
 
   // router.add(
-  //   '/_hyper/**',
+  //   '/_ziro/**',
   //   eventHandler(async (event) => {
-  //     const filePath = event.path.replace('/_hyper', '')
+  //     const filePath = event.path.replace('/_ziro', '')
   //     const extension = filePath.split('.')[filePath.split('.').length - 1]
 
   //     const contentTypes = {
@@ -99,7 +99,7 @@ export const HyperEdgeRunner = async (
   //     setHeaders(event, {
   //       'Content-Type': contentTypes[extension as keyof typeof contentTypes],
   //     })
-  //     return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+  //     return readFileSync(joinURL(process.cwd(), '.ziro', 'client-bundles', filePath))
   //   })
   // )
 

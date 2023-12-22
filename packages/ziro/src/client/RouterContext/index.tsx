@@ -4,7 +4,7 @@ export const RouterContext: FC<PropsWithChildren> = ({ children }) => {
   const [routeContent, setRouteContent] = useState(children)
   const onRouteChange = () => {
     const href = window.location.pathname
-    import(/* @vite-ignore */ `/_hyper.js?pageOnly&page=${href}`).then((m) => {
+    import(/* @vite-ignore */ `/_ziro.js?pageOnly&page=${href}`).then((m) => {
       setRouteContent(m.page())
       // ;(window as any).root.render(<RouterContext>{m.page()}</RouterContext>)
     })

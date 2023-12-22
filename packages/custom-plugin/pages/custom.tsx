@@ -1,6 +1,6 @@
-import { HyperPage } from 'ziro/page'
+import { ZiroPage } from 'ziro/page'
 
-export const page: HyperPage = ({ loaderData }) => {
+export const page: ZiroPage = ({ loaderData }) => {
   return (
     <div onClick={() => alert('hi')}>
       hello my friends from jsx
@@ -15,7 +15,7 @@ export const loader = () => {
 
 // const Page = page
 // window.root = ReactDOM.hydrateRoot(
-//   document.getElementById('hyper-app'),
+//   document.getElementById('ziro-app'),
 //   <PageProvider>
 //     <Page />
 //   </PageProvider>

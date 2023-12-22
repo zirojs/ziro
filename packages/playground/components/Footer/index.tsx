@@ -7,7 +7,7 @@ export const Footer = () => {
           <div> • </div>
           <div>© 2023</div>
           <div> • </div>
-          <a href="/">Powered by xHyper</a>
+          <a href="/">Powered by Ziro ۰</a>
         </div>
       </div>
     </footer>

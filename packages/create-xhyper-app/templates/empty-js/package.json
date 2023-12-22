@@ -1,13 +1,13 @@
 {
   "name": "project-name",
   "version": "0.1",
-  "description": "xHyper project",
+  "description": "ziro project",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "hyper dev",
-    "build": "hyper build",
-    "start": "hyper preview"
+    "dev": "ziro dev",
+    "build": "ziro build",
+    "start": "ziro preview"
   },
   "dependencies": {
     "ziro": "^0.0.11",

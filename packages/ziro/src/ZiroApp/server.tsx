@@ -2,9 +2,9 @@ import { H3Event, eventHandler, getRequestURL, getValidatedQuery } from 'h3'
 import ReactDOMServer from 'react-dom/server'
 import { joinURL } from 'ufo'
 import template from '../assets/index.html'
-import { HyperApp, HyperRuntimeRoute } from './hyperApp'
 import { attachPageAttrs } from './lib/htmlInjector'
 import { parseBody } from './utils/parseBody'
+import { ZiroApp, ZiroRuntimeRoute } from './ziro'
 
 export type PageAttrs = {
   scripts: Record<string, any>[]
@@ -12,9 +12,9 @@ export type PageAttrs = {
   meta: Record<string, string>
 }
 
-export const hyperLoaderDataVariableName = 'hyperLoaderData'
+export const ziroLoaderDataVariableName = 'ziroLoaderData'
 
-export const renderSSR = async (route: HyperRuntimeRoute, pageAttrs: PageAttrs, event: H3Event) => {
+export const renderSSR = async (route: ZiroRuntimeRoute, pageAttrs: PageAttrs, event: H3Event) => {
   const clientModule = await route.clientBundle()
   const serverModule = await route.serverBundle()
 
@@ -23,7 +23,7 @@ export const renderSSR = async (route: HyperRuntimeRoute, pageAttrs: PageAttrs, 
   if (typeof loader === 'function' && loader) {
     loaderData = await loader(event)
     pageAttrs.scripts.push({
-      dangerouslySetInnerHTML: { __html: `window.${hyperLoaderDataVariableName} = ${JSON.stringify(loaderData)}` },
+      dangerouslySetInnerHTML: { __html: `window.${ziroLoaderDataVariableName} = ${JSON.stringify(loaderData)}` },
     })
   }
 
@@ -43,7 +43,7 @@ export const renderSSR = async (route: HyperRuntimeRoute, pageAttrs: PageAttrs, 
   }
 }
 
-export const hyperRouteHandler = async (route: HyperRuntimeRoute, app: HyperApp, event: H3Event) => {
+export const ziroRouteHandler = async (route: ZiroRuntimeRoute, app: ZiroApp, event: H3Event) => {
   let render, htmlContent
 
   const pageAttrs: PageAttrs = { scripts: [], links: [], meta: {} }
@@ -57,7 +57,7 @@ export const hyperRouteHandler = async (route: HyperRuntimeRoute, app: HyperApp,
   if (route.filePath) {
     pageAttrs.scripts.push({
       type: 'module',
-      src: joinURL('/_hyper', route.filePath.replace(process.cwd(), '/')),
+      src: joinURL('/_ziro', route.filePath.replace(process.cwd(), '')),
     })
   }
 
@@ -75,13 +75,13 @@ export const hyperRouteHandler = async (route: HyperRuntimeRoute, app: HyperApp,
   return html
 }
 
-export const bootstrapH3Server = (app: HyperApp) => {
+export const bootstrapH3Server = (app: ZiroApp) => {
   app.h3.use(
     eventHandler(async (event) => {
       const pathname = getRequestURL(event).pathname
       const route = app.routes.lookup(pathname)
       if (route) {
-        return hyperRouteHandler(route, app, event)
+        return ziroRouteHandler(route, app, event)
       }
     })
   )
@@ -103,7 +103,7 @@ export const bootstrapH3Server = (app: HyperApp) => {
       if (!pageInfo) {
         const matchedRoute = app.thirdPartyRoutesArray.find((route) => route.URL === page)
         if (matchedRoute) {
-          pageInfo = matchedRoute! as HyperRuntimeRoute
+          pageInfo = matchedRoute! as ZiroRuntimeRoute
         }
       }
 

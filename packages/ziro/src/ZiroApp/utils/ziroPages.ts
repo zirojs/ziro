@@ -1,7 +1,7 @@
 import { joinURL } from 'ufo'
 import { namedRouteRegex, namedWildcardRouteRegex, rootRegex } from '../lib/pathGenerator'
 
-export const isHyperPage = (pagePath: string) => {
+export const isZiroPage = (pagePath: string) => {
   return pagePath.includes(joinURL('pages', '/')) && /\.(js|mjs|jsx|ts|tsx)$/.test(pagePath) && (namedRouteRegex.test(pagePath) || namedWildcardRouteRegex.test(pagePath) || rootRegex.test(pagePath))
 }
 

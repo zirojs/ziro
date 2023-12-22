@@ -1,7 +1,7 @@
 import { NodePath, PluginItem } from '@babel/core'
 import * as types from '@babel/types'
 
-export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof types }) => ({
+export const ziroBabelClientBundle: PluginItem = ({ types: t }: { types: typeof types }) => ({
   name: 'build-client',
   visitor: {
     VariableDeclaration(path: NodePath<types.VariableDeclaration>) {
@@ -30,7 +30,7 @@ export const hyperBabelClientBundle: PluginItem = ({ types: t }: { types: typeof
                 '=',
                 t.identifier('window.root'),
                 t.callExpression(t.identifier('ReactDOM.hydrateRoot'), [
-                  t.callExpression(t.identifier('document.getElementById'), [t.stringLiteral('hyper-app')]),
+                  t.callExpression(t.identifier('document.getElementById'), [t.stringLiteral('ziro-app')]),
                   // t.callExpression(t.identifier('page'), []),
                   t.jsxElement(t.jsxOpeningElement(t.jsxIdentifier('PageProvider'), [], false), t.jsxClosingElement(t.jsxIdentifier('PageProvider')), [
                     // t.jsxExpressionContainer(t.callExpression(t.identifier('page'), [])),

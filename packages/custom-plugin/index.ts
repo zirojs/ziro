@@ -1,10 +1,10 @@
 import { resolve } from 'node:path'
 import * as url from 'url'
-import { HyperApp } from 'ziro/dist/HyperApp/hyperApp'
+import { ZiroApp } from 'ziro'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
-export const install = (app: HyperApp) => {
+export const install = (app: ZiroApp) => {
   app.addPage({
     URL: '/custom-page',
     filePath: resolve(__dirname, './pages/custom.tsx'),

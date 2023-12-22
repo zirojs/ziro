@@ -2,8 +2,8 @@
   "name": "ziro",
   "version": "0.0.21",
   "description": "a ssr framework for react",
-  "main": "./dist/HyperApp/hyperApp.mjs",
-  "module": "./dist/HyperApp/hyperApp.mjs",
+  "main": "./dist/ZiroApp/ziro.mjs",
+  "module": "./dist/ZiroApp/ziro.mjs",
   "files": [
     "dist",
     "edge.js",
@@ -28,7 +28,7 @@
   "author": "Nairman Movaffaghi",
   "license": "MIT",
   "bin": {
-    "hyper": "dist/bin/hyper-cli.mjs"
+    "ziro": "dist/bin/ziro-cli.mjs"
   },
   "dependencies": {
     "@babel/core": "^7.22.20",

@@ -1,18 +1,17 @@
 import babel from '@babel/core'
 import react from '@vitejs/plugin-react'
 import consola from 'consola'
-import { createRouter, eventHandler, fromNodeMiddleware, setHeaders } from 'h3'
-import { genImport } from 'knitwork'
+import { createRouter, eventHandler, fromNodeMiddleware, sendRedirect, setHeaders } from 'h3'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { dirname } from 'path'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
 import { ModuleNode, ViteDevServer, createServer as createViteServer } from 'vite'
-import { hyperBabelClientBundle } from '../build/babel-plugins/client-bundle'
-import { HyperConfig, HyperRoute, HyperRouteClientProps, HyperRouteServerProps, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
+import { ziroBabelClientBundle } from '../build/babel-plugins/client-bundle'
 import { pathGenerator } from '../lib/pathGenerator'
-import { isHyperPage } from '../utils/hyperPages'
+import { isZiroPage } from '../utils/ziroPages'
+import { ZiroConfig, ZiroRoute, ZiroRouteClientProps, ZiroRouteServerProps, bootstrapZiroApp, ziroDefaultConfig } from '../ziro'
 import { serveLocal } from './utils/serveLocal'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -33,7 +32,7 @@ const moduleImporterCheck = (modules: Set<ModuleNode> | undefined, checker: (fil
 }
 
 const configFileWatcher = (vite: ViteDevServer, onChange: any) => {
-  const configPath = joinURL(process.cwd(), 'hyper.config.js')
+  const configPath = joinURL(process.cwd(), 'ziro.config.js')
   vite.watcher.on('all', async (event, path) => {
     const configModule = vite.moduleGraph.getModuleById(configPath)
 
@@ -49,7 +48,7 @@ const configFileWatcher = (vite: ViteDevServer, onChange: any) => {
   })
 }
 
-export const runHyperDevServer = async () => {
+export const ziroDevServer = async () => {
   const vite = await createViteServer({
     server: { middlewareMode: true, hmr: true },
     appType: 'custom',
@@ -59,17 +58,16 @@ export const runHyperDevServer = async () => {
     plugins: [
       {
         enforce: 'pre',
-        name: 'hyper-mount-page',
+        name: 'ziro-plugin',
         transform(code, id, options = { ssr: false }) {
-          if (isHyperPage(id) && !!!options.ssr) {
-            console.log(id, isHyperPage(id))
+          if (isZiroPage(id) && !!!options.ssr) {
             const output = babel.transformSync(code, {
               filename: id,
               targets: {
                 esmodules: true,
               },
               presets: ['@babel/preset-typescript'],
-              plugins: [hyperBabelClientBundle],
+              plugins: [ziroBabelClientBundle],
             })?.code!
             return output
           }
@@ -101,21 +99,21 @@ export const runHyperDevServer = async () => {
 }
 
 const startServer = async (vite: ViteDevServer, listeners: any) => {
-  const routeParser = async (route: HyperRoute) => {
+  const routeParser = async (route: ZiroRoute) => {
     if (!route.serverBundle && route.filePath) {
-      route.serverBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as HyperRouteServerProps
+      route.serverBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as ZiroRouteServerProps
     }
 
     if (!route.clientBundle && route.filePath) {
-      route.clientBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as HyperRouteClientProps
+      route.clientBundle = async () => (await vite.ssrLoadModule(route.filePath!)) as ZiroRouteClientProps
     }
     return route
   }
 
-  let config = defaultHyperconfig
-  if (existsSync(joinURL(process.cwd(), 'hyper.config.js'))) config = (await vite.ssrLoadModule(joinURL(process.cwd(), 'hyper.config.js'))).default as Required<HyperConfig>
+  let config = ziroDefaultConfig
+  if (existsSync(joinURL(process.cwd(), 'ziro.config.js'))) config = (await vite.ssrLoadModule(joinURL(process.cwd(), 'ziro.config.js'))).default as Required<ZiroConfig>
 
-  const app = await bootstrapHyperApp(config, routeParser)
+  const app = await bootstrapZiroApp(config, routeParser)
 
   app.h3.use(fromNodeMiddleware(vite.middlewares))
 
@@ -128,8 +126,8 @@ const startServer = async (vite: ViteDevServer, listeners: any) => {
       app.routes.insert(route, {
         URL: route,
         filePath: paths[route],
-        clientBundle: async () => (await vite.ssrLoadModule(paths[route])) as HyperRouteClientProps,
-        serverBundle: async () => (await vite.ssrLoadModule(paths[route])) as HyperRouteServerProps,
+        clientBundle: async () => (await vite.ssrLoadModule(paths[route])) as ZiroRouteClientProps,
+        serverBundle: async () => (await vite.ssrLoadModule(paths[route])) as ZiroRouteServerProps,
       })
     })
   }
@@ -140,13 +138,15 @@ const startServer = async (vite: ViteDevServer, listeners: any) => {
   const router = createRouter()
 
   router.add(
-    '/_hyper/**',
+    '/_ziro/**',
     eventHandler((event) => {
-      const filePath = event.path.replace('/_hyper', '')
-      setHeaders(event, {
-        'Content-Type': 'text/javascript',
-      })
-      return clientBundleGenerator(vite, filePath)
+      const filePath = event.path.replace('/_ziro', '')
+      if (/\.(js|mjs|jsx|ts|tsx)$/.test(filePath))
+        setHeaders(event, {
+          'Content-Type': 'text/javascript',
+        })
+      return sendRedirect(event, filePath)
+      // return clientBundleGenerator(vite, filePath)
     })
   )
   app.h3.use(router)
@@ -158,27 +158,8 @@ const startServer = async (vite: ViteDevServer, listeners: any) => {
 }
 
 const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {
-  const code = (
-    await vite.pluginContainer.transform(
-      `
-${genImport(filePath, [{ name: 'page', as: 'Page' }, 'loader'])}
-${genImport('react-dom/client', 'ReactDOM')}
-${genImport('react', ['Fragment'])}
-${genImport('ziro/page', ['PageProvider'])}
-
-const mount = (Page = Fragment) => {
-	if(!window.root)
-		window.root = ReactDOM.hydrateRoot(document.getElementById("hyper-app"),
-			<PageProvider>
-				<Page />
-			</PageProvider>
-		)
-}
-mount(Page)
-`,
-      filePath
-    )
-  ).code
-
-  return code
+  console.log(filePath)
+  console.log(vite.moduleGraph.getModulesByFile(filePath))
+  // vite.moduleGraph.invalidateModule(mod)
+  return ''
 }

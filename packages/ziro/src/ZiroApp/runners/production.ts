@@ -2,9 +2,9 @@ import { createRouter, eventHandler, setHeaders } from 'h3'
 import { existsSync, readFileSync } from 'node:fs'
 import { extname } from 'node:path'
 import { joinURL } from 'ufo'
-import { HyperRoute, bootstrapHyperApp, defaultHyperconfig } from '../hyperApp'
 import { pathGenerator } from '../lib/pathGenerator'
 import { readJsonFile } from '../lib/readJsonFile'
+import { ZiroRoute, bootstrapZiroApp, ziroDefaultConfig } from '../ziro'
 import { serveLocal } from './utils/serveLocal'
 
 type ManifestFile = {
@@ -31,28 +31,28 @@ const normalizeManifestData = (manifest: ManifestFile, allManifest: Record<strin
   getImportersCss(manifest, css, allManifest)
   manifest.css = []
   for (const c of css) {
-    manifest.css.push(joinURL('/_hyper', c))
+    manifest.css.push(joinURL('/_ziro', c))
   }
   return manifest
 }
 
-export const runHyperProductionServer = async () => {
-  let config = defaultHyperconfig
-  const configPath = joinURL(process.cwd(), '.hyper', 'hyper.config.mjs')
+export const ziroProductionServer = async () => {
+  let config = ziroDefaultConfig
+  const configPath = joinURL(process.cwd(), '.ziro', 'ziro.config.mjs')
   if (existsSync(configPath)) config = (await import(configPath)).default
 
-  const manifest = readJsonFile(joinURL(process.cwd(), '.hyper', 'server-bundles', '.vite', 'manifest.json'))
+  const manifest = readJsonFile(joinURL(process.cwd(), '.ziro', 'server-bundles', '.vite', 'manifest.json'))
 
-  const routeParser = async (route: HyperRoute) => {
+  const routeParser = async (route: ZiroRoute) => {
     if (route.filePath) {
       const routeManifestKey: any = Object.keys(manifest).find((key) => key.endsWith(route.filePath!) && !key.startsWith('pages/'))
       const routeManifest = manifest[routeManifestKey]
 
-      route.clientBundle = async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', routeManifest.file))
+      route.clientBundle = async () => await import(joinURL(process.cwd(), '.ziro', 'server-bundles', routeManifest.file))
       route.serverBundle = async () => {
         const pathSplit = routeManifest.file.split('/')
         pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
-        return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
+        return await import(joinURL(process.cwd(), '.ziro', 'server-bundles', pathSplit.join('/')))
       }
       // @ts-ignore
       route.manifestData = normalizeManifestData(routeManifest, manifest)
@@ -61,7 +61,7 @@ export const runHyperProductionServer = async () => {
     return route
   }
 
-  const app = await bootstrapHyperApp(config, routeParser)
+  const app = await bootstrapZiroApp(config, routeParser)
 
   const pages: Record<string, string[]> = {}
 
@@ -84,11 +84,11 @@ export const runHyperProductionServer = async () => {
       filePath: manifest[`pages/${paths[route]}`].file,
       // @ts-ignore
       manifestData: normalizeManifestData(manifest[`pages/${paths[route]}`], manifest),
-      clientBundle: async () => await import(joinURL(process.cwd(), '.hyper', 'server-bundles', manifest[`pages/${paths[route]}`].file)),
+      clientBundle: async () => await import(joinURL(process.cwd(), '.ziro', 'server-bundles', manifest[`pages/${paths[route]}`].file)),
       serverBundle: async () => {
         const pathSplit = manifest[`pages/${paths[route]}`].file.split('/')
         pathSplit[pathSplit.length - 1] = 'server.' + pathSplit[pathSplit.length - 1]
-        return await import(joinURL(process.cwd(), '.hyper', 'server-bundles', pathSplit.join('/')))
+        return await import(joinURL(process.cwd(), '.ziro', 'server-bundles', pathSplit.join('/')))
       },
     })
   })
@@ -97,9 +97,9 @@ export const runHyperProductionServer = async () => {
   const router = createRouter()
 
   router.add(
-    '/_hyper/**',
+    '/_ziro/**',
     eventHandler(async (event) => {
-      const filePath = event.path.replace('/_hyper', '')
+      const filePath = event.path.replace('/_ziro', '')
       const extension = filePath.split('.')[filePath.split('.').length - 1]
 
       const contentTypes = {
@@ -111,7 +111,7 @@ export const runHyperProductionServer = async () => {
       setHeaders(event, {
         'Content-Type': contentTypes[extension as keyof typeof contentTypes],
       })
-      return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+      return readFileSync(joinURL(process.cwd(), '.ziro', 'client-bundles', filePath))
     })
   )
 
@@ -119,7 +119,7 @@ export const runHyperProductionServer = async () => {
     '/**',
     eventHandler(async (event) => {
       const filePath = event.path
-      const isFileExists = existsSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+      const isFileExists = existsSync(joinURL(process.cwd(), '.ziro', 'client-bundles', filePath))
       const isFile = !!extname(filePath)
       if (isFileExists && isFile) {
         const extension = filePath.split('.')[filePath.split('.').length - 1]
@@ -132,7 +132,7 @@ export const runHyperProductionServer = async () => {
           setHeaders(event, {
             'Content-Type': contentTypes[extension as keyof typeof contentTypes],
           })
-        return readFileSync(joinURL(process.cwd(), '.hyper', 'client-bundles', filePath))
+        return readFileSync(joinURL(process.cwd(), '.ziro', 'client-bundles', filePath))
       }
     })
   )

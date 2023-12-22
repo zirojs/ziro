@@ -1,7 +1,7 @@
 import { NodePath, PluginItem } from '@babel/core'
 import * as types from '@babel/types'
 
-export const hyperBabelServerBundle: PluginItem = (types) => ({
+export const ziroBabelServerBundle: PluginItem = (types) => ({
   name: 'build-server',
   visitor: {
     VariableDeclaration(path: NodePath<types.VariableDeclaration>) {

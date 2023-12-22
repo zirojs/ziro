@@ -20,7 +20,7 @@ const projectsLanguage = {
   ts: lightBlue('TS'),
 }
 
-const defaultTargetDir = 'hyper-app'
+const defaultTargetDir = 'ziro-app'
 
 function formatTargetDir(targetDir) {
   return targetDir?.trim().replace(/\/+$/g, '')
@@ -156,7 +156,7 @@ function pkgFromUserAgent(userAgent) {
     pkg.name = targetDir
     write('package.json', JSON.stringify(pkg, null, 2) + '\n')
 
-    console.log(`\n${green('✔ Done')}.\n${yellow('⚡️ Hyper')} initialized succesffuly`)
+    console.log(`\n${green('✔ Done')}.\n${yellow('Ziro ۰')} initialized succesffuly`)
     console.log(`\nNow run:\n`)
     const cdProjectName = path.relative(process.cwd(), root)
     if (root !== process.cwd()) {

@@ -7,7 +7,7 @@ export type PageAttrs = {
 }
 export const attachPageAttrs = (html: string, pageAttrs: PageAttrs): string => {
   html = html.replace(
-    `<!--hyper-links-->`,
+    `<!--ziro-links-->`,
     ReactDOMServer.renderToString(
       <>
         {pageAttrs.links.map((link, id) => {
@@ -17,7 +17,7 @@ export const attachPageAttrs = (html: string, pageAttrs: PageAttrs): string => {
     )
   )
   html = html.replace(
-    `<!--hyper-scripts-->`,
+    `<!--ziro-scripts-->`,
     ReactDOMServer.renderToString(
       <>
         {pageAttrs.scripts.map((link, id) => {
@@ -27,7 +27,7 @@ export const attachPageAttrs = (html: string, pageAttrs: PageAttrs): string => {
     )
   )
   html = html.replace(
-    `<!--hyper-meta-->`,
+    `<!--ziro-meta-->`,
     ReactDOMServer.renderToString(
       <>
         {Object.keys(pageAttrs.meta).map((name) => {

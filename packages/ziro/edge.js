@@ -1,1 +1,1 @@
-export * from './dist/HyperApp/runners/edge.mjs'
+export * from './dist/ZiroApp/runners/edge.mjs'

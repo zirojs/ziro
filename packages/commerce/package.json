@@ -1,7 +1,7 @@
 {
   "name": "ziro-plugin-commerce",
   "version": "0.0.21",
-  "description": "e-commerce tool built on top of @hyper-inssights/hyper",
+  "description": "e-commerce tool built on top of ziro",
   "type": "module",
   "scripts": {
     "dev": "watch 'yarn build' ./src ./bin",

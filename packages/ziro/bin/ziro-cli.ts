@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander'
 import { name, version } from '../package.json' assert { type: 'json' }
-import { hyperBuild } from '../src/HyperApp/build'
-import { edgeProviders, generateEdgeBundle } from '../src/HyperApp/build/edge'
-import { runHyperDevServer } from '../src/HyperApp/runners/dev'
-import { runHyperProductionServer } from '../src/HyperApp/runners/production'
+import { ziroBuild } from '../src/ZiroApp/build'
+import { edgeProviders, generateEdgeBundle } from '../src/ZiroApp/build/edge'
+import { ziroDevServer } from '../src/ZiroApp/runners/dev'
+import { ziroProductionServer } from '../src/ZiroApp/runners/production'
 
 const program = new Command()
 
@@ -12,18 +12,18 @@ program.name(name).description('React SSR Framework').version(version)
 
 program
   .command('dev')
-  .description('run hyper dev server')
+  .description('run ziro dev server')
   .action(async (str, options) => {
     process.env.NODE_ENV = 'development'
-    runHyperDevServer()
+    ziroDevServer()
   })
 program
   .command('build')
-  .description('build hyper project')
+  .description('build ziro project')
   .addOption(new Option('--edge <provider>', 'build for edge').choices(edgeProviders))
   .action(async (options) => {
     process.env.NODE_ENV = 'production'
-    await hyperBuild()
+    await ziroBuild()
     if (options.edge) {
       await generateEdgeBundle(options.edge)
     }
@@ -31,10 +31,10 @@ program
 
 program
   .command('preview')
-  .description('preview hyper project')
+  .description('preview ziro project')
   .action(async (str, options) => {
     process.env.NODE_ENV = 'production'
-    await runHyperProductionServer()
+    await ziroProductionServer()
   })
 
 program.parse(process.argv)

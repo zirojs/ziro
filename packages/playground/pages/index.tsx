@@ -1,4 +1,4 @@
-import { HyperPage, useAction, usePageLoader } from 'ziro/page'
+import { ZiroPage, useAction, usePageLoader } from 'ziro/page'
 import { ArticlePreview } from '../components/Article/preview'
 import { DefaultLayout } from '../components/layouts'
 import { posts as PostModal, db } from '../drizzle'
@@ -29,7 +29,7 @@ export const meta = ({ loaderData }: { loaderData: Awaited<ReturnType<typeof loa
   }
 }
 
-export const Page: HyperPage = ({ loaderData }) => {
+export const Page: ZiroPage = ({ loaderData }) => {
   const { refetch } = usePageLoader()
   const { submit, loading } = useAction({
     onSuccess: (data) => {
@@ -43,7 +43,7 @@ export const Page: HyperPage = ({ loaderData }) => {
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           <div className="space-y-2 pb-8 pt-6 md:space-y-5">
             <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">Latest</h1>
-            <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">A blog created with xHyper and Tailwind.css</p>
+            <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">A blog created with Ziro and Tailwind.css</p>
           </div>
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {[...Array(2).keys()].map((i) => {

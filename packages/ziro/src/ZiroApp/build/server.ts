@@ -3,15 +3,15 @@ import { glob } from 'glob'
 import { joinURL } from 'ufo'
 import { build } from 'vite'
 import { defaultBuildConfig } from '.'
-import { HyperApp } from '../hyperApp'
 import { extend } from '../utils/extendObject'
-import { generateBuildDirectoryFromFilename, isHyperPage } from '../utils/hyperPages'
-import { hyperBabelClientBundle } from './babel-plugins/client-bundle'
-import { hyperBabelServerBundle } from './babel-plugins/server-bundle'
+import { generateBuildDirectoryFromFilename, isZiroPage } from '../utils/ziroPages'
+import { ZiroApp } from '../ziro'
+import { ziroBabelClientBundle } from './babel-plugins/client-bundle'
+import { ziroBabelServerBundle } from './babel-plugins/server-bundle'
 
 const minify = true
 
-export const buildServerBundles = async (app: HyperApp) => {
+export const buildServerBundles = async (app: ZiroApp) => {
   const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath).filter((d) => !!d) as []
 
   await build(
@@ -20,7 +20,7 @@ export const buildServerBundles = async (app: HyperApp) => {
         manifest: true,
         ssr: true,
         minify,
-        outDir: '.hyper/server-bundles',
+        outDir: '.ziro/server-bundles',
         rollupOptions: {
           input: [...(await glob(joinURL(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' })), ...pluginsFiles],
           output: {
@@ -35,18 +35,18 @@ export const buildServerBundles = async (app: HyperApp) => {
       },
       plugins: [
         {
-          name: 'hyper/server/transform-client-bundles',
+          name: 'ziro/server/transform-client-bundles',
           enforce: 'pre',
           transform(code, id) {
             let clientBundle = code
-            if (isHyperPage(id)) {
+            if (isZiroPage(id)) {
               clientBundle = babel.transformSync(code, {
                 filename: id,
                 targets: {
                   esmodules: true,
                 },
                 presets: ['@babel/preset-typescript'],
-                plugins: [hyperBabelClientBundle],
+                plugins: [ziroBabelClientBundle],
               })?.code!
             }
             return {
@@ -65,7 +65,7 @@ export const buildServerBundles = async (app: HyperApp) => {
         minify,
         ssrEmitAssets: true,
         ssr: true,
-        outDir: '.hyper/server-bundles',
+        outDir: '.ziro/server-bundles',
         rollupOptions: {
           input: [...(await glob(joinURL(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' })), ...pluginsFiles],
           output: {
@@ -80,19 +80,19 @@ export const buildServerBundles = async (app: HyperApp) => {
       },
       plugins: [
         {
-          name: 'hyper/server/transform-server-bundles',
+          name: 'ziro/server/transform-server-bundles',
           enforce: 'pre',
           transform(code, id) {
             let serverBundle = code
 
-            if (isHyperPage(id)) {
+            if (isZiroPage(id)) {
               serverBundle = babel.transformSync(code, {
                 filename: id,
                 targets: {
                   esmodules: true,
                 },
                 presets: ['@babel/preset-typescript'],
-                plugins: [hyperBabelServerBundle],
+                plugins: [ziroBabelServerBundle],
               })?.code!
             }
             return {

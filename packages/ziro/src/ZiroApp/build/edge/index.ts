@@ -11,6 +11,6 @@ const providerMapper: Record<ProvidersType, new (...args: any[]) => EdgeProvider
 }
 
 export const generateEdgeBundle = async (provider: ProvidersType) => {
-  const serverBundlesDir = joinURL(process.cwd(), '.hyper', 'server-bundles')
+  const serverBundlesDir = joinURL(process.cwd(), '.ziro', 'server-bundles')
   await new providerMapper[provider](serverBundlesDir).generate()
 }

@@ -3,19 +3,19 @@ import { glob } from 'glob'
 import { joinURL } from 'ufo'
 import { build } from 'vite'
 import { defaultBuildConfig } from '.'
-import { HyperApp } from '../hyperApp'
 import { extend } from '../utils/extendObject'
-import { generateBuildDirectoryFromFilename, isHyperPage } from '../utils/hyperPages'
-import { hyperBabelClientBundle } from './babel-plugins/client-bundle'
+import { generateBuildDirectoryFromFilename, isZiroPage } from '../utils/ziroPages'
+import { ZiroApp } from '../ziro'
+import { ziroBabelClientBundle } from './babel-plugins/client-bundle'
 
-export const buildClientHydration = async (app: HyperApp) => {
+export const buildClientHydration = async (app: ZiroApp) => {
   const pluginsFiles = app.thirdPartyRoutesArray.map((route) => route.filePath).filter((d) => !!d) as string[]
 
   await build(
     extend(defaultBuildConfig, {
       build: {
         manifest: true,
-        outDir: '.hyper/client-bundles',
+        outDir: '.ziro/client-bundles',
         rollupOptions: {
           input: [...(await glob(joinURL(process.cwd(), 'pages/**/*.tsx'), { ignore: 'node_modules/**' })), ...pluginsFiles],
           output: {
@@ -30,19 +30,19 @@ export const buildClientHydration = async (app: HyperApp) => {
       },
       plugins: [
         {
-          name: 'hyper/client/transform-client-bundles',
+          name: 'ziro/client/transform-client-bundles',
           enforce: 'pre',
           transform(code, id) {
             let clientBundle = code
 
-            if (isHyperPage(id)) {
+            if (isZiroPage(id)) {
               clientBundle = babel.transformSync(code, {
                 filename: id,
                 targets: {
                   esmodules: true,
                 },
                 presets: ['@babel/preset-typescript'],
-                plugins: [hyperBabelClientBundle],
+                plugins: [ziroBabelClientBundle],
               })?.code!
             }
             return {

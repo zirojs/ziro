@@ -1,5 +1,6 @@
 import { App, createApp, eventHandler, getRequestURL, getValidatedQuery } from 'h3'
 import { createRouter } from 'radix3'
+import { joinURL } from 'ufo'
 import { RouteData } from '../../lib/RouterObj'
 import { PageAttrs, attachPageAttrs } from '../../lib/htmlInjector'
 import { parseBody } from '../../utils/parseBody'
@@ -11,12 +12,12 @@ const template = `<!DOCTYPE html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--hyper-meta-->
-    <!--hyper-links-->
+    <!--ziro-meta-->
+    <!--ziro-links-->
   </head>
   <body>
-    <div id="hyper-app"><!--ssr-outlet--></div>
-    <!--hyper-scripts-->
+    <div id="ziro-app"><!--ssr-outlet--></div>
+    <!--ziro-scripts-->
   </body>
 </html>
 `
@@ -61,12 +62,12 @@ export const setupFsRoutes = (app: App, routes: any) => {
 
         pageAttrs.scripts.push({
           type: 'module',
-          src: `/_hyper/${routeData.filePath.replace('.server', '')}`,
+          src: joinURL(`/_ziro`, routeData.filePath.replace('.server', '')),
         })
         if (routeData.manifestData?.css) {
-          routeData.manifestData?.css.map((href) => {
+          routeData.manifestData?.css.forEach((href) => {
             pageAttrs.links.push({
-              href: `/_hyper/${href}`,
+              href: joinURL(`/_ziro`, href),
               rel: 'stylesheet',
               type: 'text/css',
             })
@@ -117,7 +118,7 @@ export const setupFsRoutes = (app: App, routes: any) => {
   )
 }
 
-export const bootstrapEdgeHyperApp = (routes: any) => {
+export const bootstrapEdgeZiroApp = (routes: any) => {
   const app = createApp()
 
   setupFsRoutes(app, routes)

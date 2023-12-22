@@ -1,21 +1,21 @@
 import * as jose from 'jose'
-import { HyperApp } from 'ziro'
+import { ZiroApp } from 'ziro'
 import { H3Event, getCookie, getHeader, setCookie, setResponseStatus } from 'ziro/h3.js'
 
-export const DEFAULT_AUTH_COOKIE_NAME = 'HYPER_AUTH_TOKEN'
+export const DEFAULT_AUTH_COOKIE_NAME = 'Ziro_AUTH_TOKEN'
 
-export type HyperAuthUser = any
-export type HyperAuthOptions = {
-  authenticate: (username: string, password: string) => Promise<HyperAuthUser>
+export type ZiroAuthUser = any
+export type ZiroAuthOptions = {
+  authenticate: (username: string, password: string) => Promise<ZiroAuthUser>
   secredKey: string
   cookieName?: string
 }
 
-export default ({ authenticate, secredKey, cookieName = DEFAULT_AUTH_COOKIE_NAME }: HyperAuthOptions) => {
+export default ({ authenticate, secredKey, cookieName = DEFAULT_AUTH_COOKIE_NAME }: ZiroAuthOptions) => {
   const secret = jose.base64url.decode(secredKey)
   return {
     name: 'ziro-plugin-auth',
-    install: (app: HyperApp) => {
+    install: (app: ZiroApp) => {
       app.addPage({
         URL: '/auth',
         clientBundle: async () => ({

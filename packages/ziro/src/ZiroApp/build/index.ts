@@ -4,7 +4,7 @@ import { polyfillNode } from 'esbuild-plugin-polyfill-node'
 import { existsSync } from 'node:fs'
 import { joinURL } from 'ufo'
 import { InlineConfig } from 'vite'
-import { Environment, HyperApp, HyperConfig, defaultHyperconfig } from '../hyperApp'
+import { Environment, ZiroApp, ZiroConfig, ziroDefaultConfig } from '../ziro'
 import { buildClientHydration } from './client'
 import { buildServerBundles } from './server'
 export const defaultBuildConfig: InlineConfig = {
@@ -23,23 +23,23 @@ export const defaultBuildConfig: InlineConfig = {
   },
 }
 
-export const hyperBuild = async () => {
-  const { config } = await loadConfig<Required<HyperConfig>>({
-    name: 'hyper',
-    defaultConfig: defaultHyperconfig,
+export const ziroBuild = async () => {
+  const { config } = await loadConfig<Required<ZiroConfig>>({
+    name: 'ziro',
+    defaultConfig: ziroDefaultConfig,
     jitiOptions: {
       esmResolve: true,
     },
   })
 
-  const app = new HyperApp(Environment.PRODUCTION, [])
+  const app = new ZiroApp(Environment.PRODUCTION, [])
   await app.installPlugins(config?.plugins || [])
 
   await buildClientHydration(app)
   await buildServerBundles(app)
 
-  const configPath = joinURL(process.cwd(), 'hyper.config.js')
-  const configOutFile = joinURL(process.cwd(), '.hyper/', 'hyper.config.mjs')
+  const configPath = joinURL(process.cwd(), 'ziro.config.js')
+  const configOutFile = joinURL(process.cwd(), '.ziro/', 'ziro.config.mjs')
 
   if (existsSync(configPath))
     await build({

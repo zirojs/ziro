@@ -1,5 +1,5 @@
 {
-  "name": "hyper",
+  "name": "ziro",
   "private": true,
   "workspaces": [
     "packages/*"
