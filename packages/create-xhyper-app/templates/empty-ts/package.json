@@ -10,7 +10,7 @@
     "start": "ziro preview"
   },
   "dependencies": {
-    "ziro": "^0.0.11",
+    "ziro": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
