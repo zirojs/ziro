@@ -1,7 +1,7 @@
 import { createRouter } from 'h3'
 import { joinURL } from 'ufo'
 import { bootstrapH3Server } from '../server'
-import { Environment, ZiroApp, ZiroConfig, ZiroRoute, ZiroRouteClientBundle, ZiroRouteServerBundle } from '../ziro'
+import { ZiroApp, ZiroConfig, ZiroRoute, ZiroRouteClientBundle, ZiroRouteServerBundle } from '../ziro'
 import { pathGenerator } from './edge/pathGenerator'
 
 type ManifestFile = {
@@ -37,7 +37,7 @@ export const ziroEdgeRunner = async (
   config: ZiroConfig,
   manifest: Record<string, { file: string; module: any; isEntry: boolean; clientBundle: ZiroRouteClientBundle; serverBundle: ZiroRouteServerBundle }>
 ) => {
-  const app = new ZiroApp(Environment.PRODUCTION, [], {
+  const app = new ZiroApp( [], {
     isEdge: true,
   })
 

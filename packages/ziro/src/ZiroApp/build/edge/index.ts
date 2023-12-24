@@ -1,10 +1,7 @@
 import { joinURL } from 'ufo'
 import { Cloudflare } from './providers/cloudflare'
 import { EdgeProvider } from './providers/interface'
-
-export type ProvidersType = 'cloudflare'
-
-export const edgeProviders: ProvidersType[] = ['cloudflare']
+import { ProvidersType } from './types'
 
 const providerMapper: Record<ProvidersType, new (...args: any[]) => EdgeProvider> = {
   cloudflare: Cloudflare,

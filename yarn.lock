@@ -3885,11 +3885,6 @@ axios@^1.0.0:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-babel-plugin-danger-remove-unused-import@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/babel-plugin-danger-remove-unused-import/-/babel-plugin-danger-remove-unused-import-2.0.0.tgz"
-  integrity sha512-0K+VTyBdN6Ag+HN6kxySFQyTKiG6gZyD/+EOMifd2pDunlTLr86K87Cv/7bDEIFDWYM634ookoVv9HMLsY4uuA==
-
 babel-plugin-polyfill-corejs2@^0.4.5:
   version "0.4.5"
   resolved "https://registry.npmjs.org/babel-plugin-polyfill-corejs2/-/babel-plugin-polyfill-corejs2-0.4.5.tgz"
@@ -3913,6 +3908,11 @@ babel-plugin-polyfill-regenerator@^0.5.2:
   integrity sha512-tAlOptU0Xj34V1Y2PNTL4Y0FOJMDB6bZmoW39FeCQIhigGLkqu3Fj6uiXpxIf6Ij274ENdYx64y6Au+ZKlb1IA==
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.4.2"
+
+babel-plugin-transform-html-import-to-string@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-html-import-to-string/-/babel-plugin-transform-html-import-to-string-2.0.0.tgz#d23e5dad5f0600ebf9fccce8e587c853f5abaa88"
+  integrity sha512-+N/mOjUIgKOcmcJsmYxb++l/ApbFxuBQDlgEC56H1CdABJzXjCZ04/yFMDF0/EfrZSGkx+heqX4P++qFrfpw6g==
 
 balanced-match@^1.0.0:
   version "1.0.2"

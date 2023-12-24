@@ -5,6 +5,7 @@ import { createRouter, eventHandler, fromNodeMiddleware, sendRedirect, setHeader
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { dirname } from 'path'
+import { isDevelopment } from 'std-env'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
 import { ModuleNode, ViteDevServer, createServer as createViteServer } from 'vite'
@@ -13,6 +14,8 @@ import { pathGenerator } from '../lib/pathGenerator'
 import { isZiroPage } from '../utils/ziroPages'
 import { ZiroConfig, ZiroRoute, ZiroRouteClientProps, ZiroRouteServerProps, bootstrapZiroApp, ziroDefaultConfig } from '../ziro'
 import { serveLocal } from './utils/serveLocal'
+
+console.log(isDevelopment)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
