@@ -1,4 +1,4 @@
-import { ZiroPage, useAction, usePageLoader } from 'ziro/page'
+import { useAction, usePageLoader } from 'ziro/page'
 import { ArticlePreview } from '../components/Article/preview'
 import { DefaultLayout } from '../components/layouts'
 import { posts as PostModal, db } from '../drizzle'
@@ -29,7 +29,7 @@ export const meta = ({ loaderData }: { loaderData: Awaited<ReturnType<typeof loa
   }
 }
 
-export const Page: ZiroPage = ({ loaderData }) => {
+ function PageContent ({ loaderData }) {
   const { refetch } = usePageLoader()
   const { submit, loading } = useAction({
     onSuccess: (data) => {
@@ -59,3 +59,5 @@ export const Page: ZiroPage = ({ loaderData }) => {
     </DefaultLayout>
   )
 }
+
+export default PageContent

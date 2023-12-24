@@ -105,13 +105,11 @@ export class ZiroApp {
     this.middlewares.push(middleware)
   }
   async installPlugins(plugins: ZiroPlugin[]) {
-    console.log('')
     consola.start('Installing plugins...')
     for (const plugin of plugins) {
       await plugin.install(this)
       consola.success(`[${plugin.name}] installed`)
     }
-    console.log('')
   }
   async transformHTML(template: string, event: H3Event) {
     return template

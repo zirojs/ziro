@@ -11,7 +11,7 @@ export const transformPageContent = async (vite: ViteDevServer, routeData: Route
   const filePath = routeData.filePath
   const pageModule = await vite.ssrLoadModule(filePath)
 
-  if (!pageModule.Page) {
+  if (!pageModule.default) {
     vite.ws.send({
       type: 'error',
       err: {
@@ -99,10 +99,10 @@ export const pageSSRRenderer = async (file: RouteData, pageAttrs: PageAttrs) => 
   }
 
   return async () => {
-    if (!clientBundle.Page) {
+    if (!clientBundle.default) {
       return ''
     }
-    const Page = clientBundle.Page
+    const Page = clientBundle.default
     return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
   }
 }

@@ -36,10 +36,10 @@ export const renderSSR = async (route: ZiroRuntimeRoute, pageAttrs: PageAttrs, e
   }
 
   return async () => {
-    if (!clientModule.Page) {
+    if (!clientModule.default) {
       return ''
     }
-    const Page = clientModule.Page
+    const Page = clientModule.default
     return ReactDOMServer.renderToString(React.createElement(Page, { loaderData }))
   }
 }

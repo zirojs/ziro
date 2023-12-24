@@ -5,7 +5,6 @@ import { createRouter, eventHandler, fromNodeMiddleware, sendRedirect, setHeader
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { dirname } from 'path'
-import { isDevelopment } from 'std-env'
 import { joinURL } from 'ufo'
 import { fileURLToPath } from 'url'
 import { ModuleNode, ViteDevServer, createServer as createViteServer } from 'vite'
@@ -15,7 +14,6 @@ import { isZiroPage } from '../utils/ziroPages'
 import { ZiroConfig, ZiroRoute, ZiroRouteClientProps, ZiroRouteServerProps, bootstrapZiroApp, ziroDefaultConfig } from '../ziro'
 import { serveLocal } from './utils/serveLocal'
 
-console.log(isDevelopment)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -135,7 +133,7 @@ const startServer = async (vite: ViteDevServer, listeners: any) => {
     })
   }
 
-  routerConfigure()
+  vite.watcher.once('ready', routerConfigure)
   vite.watcher.on('all', routerConfigure)
 
   const router = createRouter()
@@ -149,7 +147,6 @@ const startServer = async (vite: ViteDevServer, listeners: any) => {
           'Content-Type': 'text/javascript',
         })
       return sendRedirect(event, filePath)
-      // return clientBundleGenerator(vite, filePath)
     })
   )
   app.h3.use(router)
@@ -158,11 +155,4 @@ const startServer = async (vite: ViteDevServer, listeners: any) => {
   }
   const listener = await serveLocal(app)
   listeners.onRestart = listener.close
-}
-
-const clientBundleGenerator = async (vite: ViteDevServer, filePath: string) => {
-  console.log(filePath)
-  console.log(vite.moduleGraph.getModulesByFile(filePath))
-  // vite.moduleGraph.invalidateModule(mod)
-  return ''
 }

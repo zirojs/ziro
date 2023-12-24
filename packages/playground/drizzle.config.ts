@@ -6,6 +6,6 @@ export default {
   out: './drizzle/migrations',
   driver: 'pg',
   dbCredentials: {
-    connectionString: 'postgresql://Narixius:LCu7NGKE3TPB@ep-throbbing-scene-16447208.eu-central-1.aws.neon.tech/drizzle?sslmode=require',
+    connectionString: import.meta.env.VITE_DB_CONNECTION_STRING,
   },
 } satisfies Config

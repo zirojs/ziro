@@ -1,7 +1,7 @@
 import { DefaultLayout } from '../../components/layouts'
 import '../style.css'
 
-export const Page = () => {
+export default function Page (){
   return (
     <DefaultLayout>
       <main className="mb-auto">
