@@ -4,7 +4,7 @@ import { polyfillNode } from 'esbuild-plugin-polyfill-node'
 import { existsSync } from 'node:fs'
 import { joinURL } from 'ufo'
 import { InlineConfig } from 'vite'
-import { Environment, ZiroApp, ZiroConfig, ziroDefaultConfig } from '../ziro'
+import { ZiroApp, ZiroConfig, ziroDefaultConfig } from '../ziro'
 import { buildClientHydration } from './client'
 import { buildServerBundles } from './server'
 export const defaultBuildConfig: InlineConfig = {
@@ -32,7 +32,7 @@ export const ziroBuild = async () => {
     },
   })
 
-  const app = new ZiroApp(Environment.PRODUCTION, [])
+  const app = new ZiroApp( [])
   await app.installPlugins(config?.plugins || [])
 
   await buildClientHydration(app)

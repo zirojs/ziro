@@ -2,7 +2,6 @@ import consola from 'consola'
 import { App as H3App, H3Event, Router, createApp, createRouter as createH3Router, eventHandler } from 'h3'
 import { RadixRouter, createRouter } from 'radix3'
 import { FC } from 'react'
-import { isDevelopment } from 'std-env'
 import { ziroRouteHandler } from './server'
 
 export * from 'h3'
@@ -87,7 +86,7 @@ export class ZiroApp {
   public h3: H3App = createApp()
   public thirdPartyRoutes: Router = createH3Router()
   public thirdPartyRoutesArray: ZiroRoute[] = []
-  constructor(public readonly environment: Environment, public readonly defaultRoutes: ZiroRuntimeRoute[], public readonly options: ZiroAppOptions = ziroAppDefaultOptions) {
+  constructor( public readonly defaultRoutes: ZiroRuntimeRoute[], public readonly options: ZiroAppOptions = ziroAppDefaultOptions) {
     this.routes = createRouter()
     for (const route of defaultRoutes) this.routes.insert(route.URL, route)
     this.h3.use(this.thirdPartyRoutes)
@@ -138,7 +137,7 @@ export const bootstrapZiroApp = async (config?: Required<ZiroConfig>, routeParse
   consola.wrapAll()
   consola.info('Starting Ziro App')
 
-  const app = new ZiroApp(isDevelopment ? Environment.DEV : Environment.PRODUCTION, [], {
+  const app = new ZiroApp( [], {
     isEdge: config!.edge,
   })
 

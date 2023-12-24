@@ -1,4 +1,5 @@
 import { H3Event, eventHandler, getRequestURL, getValidatedQuery } from 'h3'
+import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { joinURL } from 'ufo'
 import template from '../assets/index.html'
@@ -39,7 +40,7 @@ export const renderSSR = async (route: ZiroRuntimeRoute, pageAttrs: PageAttrs, e
       return ''
     }
     const Page = clientModule.Page
-    return ReactDOMServer.renderToString(<Page loaderData={loaderData} />)
+    return ReactDOMServer.renderToString(React.createElement(Page, { loaderData }))
   }
 }
 
