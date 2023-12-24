@@ -8,5 +8,6 @@
     "build": "unbuild"
   },
   "author": "Nairman Movaffaghi",
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "f9eceb365f9636345e16a8223dba13782c7d21c1"
 }

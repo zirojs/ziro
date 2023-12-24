@@ -14,5 +14,6 @@
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "prompts": "^2.4.2"
-  }
+  },
+  "gitHead": "f9eceb365f9636345e16a8223dba13782c7d21c1"
 }

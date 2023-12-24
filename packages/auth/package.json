@@ -26,5 +26,6 @@
     "tsx": "^4.6.2",
     "typescript": "^5.3.2",
     "unbuild": "^2.0.0"
-  }
+  },
+  "gitHead": "f9eceb365f9636345e16a8223dba13782c7d21c1"
 }
