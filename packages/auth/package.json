@@ -1,6 +1,6 @@
 {
   "name": "ziro-plugin-auth",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "",
   "private": false,
   "main": "./dist/index.mjs",

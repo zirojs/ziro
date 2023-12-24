@@ -1,6 +1,6 @@
 {
   "name": "ziro",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "a ssr framework for react",
   "main": "./dist/ZiroApp/ziro.mjs",
   "module": "./dist/ZiroApp/ziro.mjs",
