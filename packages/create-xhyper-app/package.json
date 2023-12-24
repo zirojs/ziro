@@ -1,6 +1,6 @@
 {
   "name": "create-ziro-app",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "create ziro app",
   "bin": {
     "create-ziro-app": "./index.js"
