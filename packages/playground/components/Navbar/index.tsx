@@ -1,13 +1,15 @@
+import { Link } from "ziro/router"
+
 export const Navbar = () => {
   return (
     <header className="flex items-center justify-between py-10">
       <div>
-        <a aria-label="TailwindBlog" href="/">
+        <Link aria-label="TailwindBlog" to="/">
           <div className="flex items-center justify-start">
             <div className=""></div>
             <div className="hidden h-6 text-2xl font-semibold sm:block">Nariman's Blog</div>
           </div>
-        </a>
+        </Link>
       </div>
       <div className="flex items-center space-x-4 leading-5 sm:space-x-6">
         <a className="hidden font-medium text-gray-900 dark:text-gray-100 sm:block" href="/about">

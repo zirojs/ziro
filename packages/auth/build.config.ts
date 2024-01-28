@@ -1,17 +1,17 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from "unbuild";
 export default defineBuildConfig([
-  {
-    entries: ['./index.ts'],
-    declaration: true,
-    clean: false,
-    rollup: {
-      inlineDependencies: true,
-      esbuild: {
-        jsx: 'automatic',
-        minify: true,
-        treeShaking: true,
-        format: 'esm',
-      },
-    },
-  },
-])
+	{
+		entries: ["./index.tsx"],
+		declaration: true,
+		clean: false,
+		rollup: {
+			inlineDependencies: true,
+			esbuild: {
+				jsx: "automatic",
+				minify: true,
+				treeShaking: true,
+				format: "esm",
+			},
+		},
+	},
+]);
