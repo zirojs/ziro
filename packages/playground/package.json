@@ -28,7 +28,7 @@
 		"ziro": "^0.0.26"
 	},
 	"dependencies": {
-		"@neondatabase/serverless": "^0.6.0",
+		"@neondatabase/serverless": "^0.8.1",
 		"@tanstack/router-devtools": "^1.0.6",
 		"drizzle-orm": "^0.29.1",
 		"pg": "^8.11.3",
